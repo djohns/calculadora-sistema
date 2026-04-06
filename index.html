@@ -2,503 +2,347 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistema Betcalc ⚽</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════
-   VARIABLES & RESET
-═══════════════════════════════════════════════════════════ */
-:root {
-  --bg:         #0d0f12;
-  --surface:    #141720;
-  --surface2:   #1b1f2c;
-  --surface3:   #212638;
-  --border:     #252c3a;
-  --border2:    #2f3850;
-  --text:       #eceef5;
-  --muted:      #7a8499;
-  --dim:        #434c63;
-  --green:      #00d17f;
-  --green-bg:   rgba(0,209,127,.09);
-  --red:        #ff5050;
-  --red-bg:     rgba(255,80,80,.09);
-  --amber:      #f5a623;
-  --amber-bg:   rgba(245,166,35,.09);
-  --blue:       #4fa8ff;
-  --blue-bg:    rgba(79,168,255,.09);
-  --accent:     #00d17f;
-  --mono:       'IBM Plex Mono', monospace;
-  --sans:       'IBM Plex Sans', sans-serif;
-  --r-sm:       8px;
-  --r-md:       12px;
-  --r-lg:       16px;
+/* ═══ RESET & VARS ════════════════════════════════════════════ */
+:root{
+  --bg:#0d0f13;
+  --s1:#13161e;
+  --s2:#191d28;
+  --s3:#1f2433;
+  --b1:#242b3a;
+  --b2:#2e3749;
+  --text:#eceef6;
+  --muted:#7b8599;
+  --dim:#3f4a62;
+  --green:#00d17f;
+  --gbg:rgba(0,209,127,.1);
+  --red:#ff5252;
+  --rbg:rgba(255,82,82,.1);
+  --amber:#f5a623;
+  --abg:rgba(245,166,35,.1);
+  --blue:#4fa9ff;
+  --bbg:rgba(79,169,255,.1);
+  --accent:#00d17f;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+  --r:10px;
+  --rl:14px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow-x: hidden; }
-body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 15px;
-  line-height: 1.6;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;min-height:100vh}
 
-/* ═══════════════════════════════════════════════════════════
-   HEADER
-═══════════════════════════════════════════════════════════ */
-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 0 24px;
-  height: 56px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(13,15,18,.96);
-  backdrop-filter: blur(10px);
-  position: sticky;
-  top: 0;
-  z-index: 200;
+/* ═══ HEADER ══════════════════════════════════════════════════ */
+header{
+  position:sticky;top:0;z-index:300;
+  display:flex;align-items:center;gap:14px;
+  padding:0 28px;height:58px;
+  background:rgba(13,15,19,.95);
+  border-bottom:1px solid var(--b1);
+  backdrop-filter:blur(12px);
 }
-.logo {
-  width: 34px; height: 34px;
-  background: var(--accent);
-  border-radius: 9px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px; flex-shrink: 0;
-}
-.header-title { font-family: var(--mono); font-size: 15px; font-weight: 500; }
-.header-sub   { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: auto; }
-@media(max-width:600px){ .header-sub { display:none; } }
+.logo{width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.htitle{font-family:var(--mono);font-size:16px;font-weight:500}
+.hsub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto}
+@media(max-width:600px){.hsub{display:none}}
 
-/* ═══════════════════════════════════════════════════════════
-   LAYOUT — FULL SCREEN, 2 COL DESKTOP / 1 COL MOBILE
-═══════════════════════════════════════════════════════════ */
-.app {
-  display: grid;
-  grid-template-columns: 420px 1fr;
-  grid-template-rows: 1fr;
-  height: calc(100vh - 56px);
+/* ═══ PAGE LAYOUT — sidebar sticky + content flows ═══════════ */
+.page{
+  display:grid;
+  grid-template-columns:400px 1fr;
+  gap:0;
+  min-height:calc(100vh - 58px);
 }
-@media(max-width:900px){
-  .app {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    height: auto;
+@media(max-width:960px){.page{grid-template-columns:1fr}}
+
+/* ── Sidebar ── */
+.sidebar{
+  border-right:1px solid var(--b1);
+  padding:24px 20px;
+  display:flex;flex-direction:column;gap:18px;
+  /* sticky — scrolls independently on desktop */
+  position:sticky;
+  top:58px;
+  height:calc(100vh - 58px);
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--b2) transparent;
+}
+@media(max-width:960px){
+  .sidebar{
+    position:static;height:auto;
+    border-right:none;border-bottom:1px solid var(--b1);
+    padding:20px 16px;
   }
 }
 
-/* ── Left sidebar ── */
-.sidebar {
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* ── Content ── */
+.content{
+  padding:24px;
+  display:flex;flex-direction:column;gap:20px;
 }
-@media(max-width:900px){ .sidebar { border-right: none; border-bottom: 1px solid var(--border); padding: 16px; } }
+@media(max-width:960px){.content{padding:16px}}
 
-/* ── Right content ── */
-.content {
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* ═══ CARDS ═══════════════════════════════════════════════════ */
+.card{
+  background:var(--s1);
+  border:1px solid var(--b1);
+  border-radius:var(--rl);
 }
-@media(max-width:900px){ .content { padding: 16px; } }
+.card-head{
+  padding:14px 20px;
+  border-bottom:1px solid var(--b1);
+  display:flex;align-items:center;gap:10px;
+}
+.ch-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ch-title{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-family:var(--mono)}
+.ch-badge{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--dim);background:var(--s2);padding:3px 10px;border-radius:99px}
+.card-body{padding:20px}
 
-/* ═══════════════════════════════════════════════════════════
-   CARDS / PANELS
-═══════════════════════════════════════════════════════════ */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  overflow: hidden;
+/* ═══ INPUTS ══════════════════════════════════════════════════ */
+label.lbl{display:block;font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase;margin-bottom:7px}
+input[type=text],input[type=number],select{
+  width:100%;background:var(--s2);
+  border:1px solid var(--b2);border-radius:var(--r);
+  color:var(--text);font-family:var(--sans);font-size:15px;
+  padding:0 14px;height:44px;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+  appearance:none;-moz-appearance:textfield;
 }
-.card-head {
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-}
-.card-head-icon {
-  width: 26px; height: 26px;
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; flex-shrink: 0;
-}
-.card-title {
-  font-size: 11px; font-weight: 500;
-  letter-spacing: .08em; text-transform: uppercase;
-  color: var(--muted); font-family: var(--mono);
-}
-.card-badge {
-  margin-left: auto;
-  font-family: var(--mono); font-size: 11px;
-  color: var(--dim); background: var(--surface2);
-  padding: 3px 8px; border-radius: 99px;
-}
-.card-body { padding: 18px; }
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]{font-family:var(--mono)}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,209,127,.12)}
+input::placeholder{color:var(--dim);font-size:14px}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237b8599' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+select option{background:var(--s2)}
+.pfx-wrap{position:relative}
+.pfx{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:13px;color:var(--muted);pointer-events:none;z-index:1}
+.pfx-wrap input{padding-left:50px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg{margin-bottom:16px}
+.fg:last-child{margin-bottom:0}
 
-/* ═══════════════════════════════════════════════════════════
-   INPUTS & FORMS
-═══════════════════════════════════════════════════════════ */
-.label {
-  display: block;
-  font-size: 11px; color: var(--muted);
-  font-family: var(--mono);
-  letter-spacing: .05em; text-transform: uppercase;
-  margin-bottom: 6px;
-}
-input[type="text"], input[type="number"], select, textarea {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: var(--r-sm);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 15px;
-  padding: 0 12px;
-  height: 42px;
-  outline: none;
-  transition: border-color .15s;
-  -moz-appearance: textfield;
-}
-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-input[type="number"] { font-family: var(--mono); }
-input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,209,127,.12); }
-input::placeholder, textarea::placeholder { color: var(--dim); font-size: 14px; }
-select { cursor: pointer; } select option { background: var(--surface2); }
-textarea { height: auto; padding: 10px 12px; resize: none; font-size: 14px; line-height: 1.5; }
+/* ═══ BUTTONS ═════════════════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:44px;padding:0 20px;border-radius:var(--r);
+  font-family:var(--sans);font-size:15px;font-weight:500;
+  cursor:pointer;border:1px solid var(--b2);
+  background:transparent;color:var(--text);transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--s2);border-color:var(--b2)}
+.btn:active{transform:scale(.98)}
+.btn-accent{background:var(--accent);color:#0b0d10;border-color:var(--accent);font-family:var(--mono);font-size:14px;letter-spacing:.04em}
+.btn-accent:hover{opacity:.88;background:var(--accent)}
+.btn-sm{height:38px;padding:0 14px;font-size:14px}
+.btn-ico{width:38px;height:38px;padding:0;border-radius:var(--r);border:1px solid var(--b1);color:var(--dim)}
+.btn-ico:hover{border-color:var(--red);color:var(--red);background:var(--rbg)}
+.btn-full{width:100%;height:50px;font-size:15px}
 
-.input-prefix-wrap { position: relative; }
-.input-prefix {
-  position: absolute; left: 12px; top: 50%;
-  transform: translateY(-50%);
-  font-family: var(--mono); font-size: 12px;
-  color: var(--muted); pointer-events: none; z-index: 1;
-}
-.input-prefix-wrap input { padding-left: 46px; }
+/* ═══ SHEETS STATUS ═══════════════════════════════════════════ */
+.sh-row{display:flex;gap:10px;align-items:stretch}
+.sh-row input{flex:1}
+.sh-status{display:none;align-items:center;gap:8px;font-size:13px;font-family:var(--mono);padding:10px 14px;border-radius:var(--r);margin-top:10px}
+.sh-status.loading{display:flex;background:var(--s2);color:var(--muted)}
+.sh-status.ok{display:flex;background:var(--gbg);color:var(--green);border:1px solid rgba(0,209,127,.2)}
+.sh-status.error{display:flex;background:var(--rbg);color:var(--red);border:1px solid rgba(255,82,82,.2);flex-direction:column;align-items:flex-start;gap:4px}
+.spinner{width:16px;height:16px;border:2px solid var(--b2);border-top-color:var(--accent);border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-group { margin-bottom: 14px; }
-.form-group:last-child { margin-bottom: 0; }
-
-/* ═══════════════════════════════════════════════════════════
-   BUTTONS
-═══════════════════════════════════════════════════════════ */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  height: 42px; padding: 0 18px;
-  border-radius: var(--r-sm);
-  font-family: var(--sans); font-size: 14px; font-weight: 500;
-  cursor: pointer; border: 1px solid var(--border2);
-  background: transparent; color: var(--text);
-  transition: all .15s; white-space: nowrap;
+/* ═══ SELECCIONES ═════════════════════════════════════════════ */
+.sel-hdr{
+  display:grid;grid-template-columns:36px 1fr 100px 80px 38px;
+  gap:8px;padding:0 0 10px;
+  border-bottom:1px solid var(--b1);margin-bottom:10px;
 }
-.btn:hover { background: var(--surface2); border-color: var(--border); }
-.btn:active { transform: scale(.98); }
-.btn-primary { background: var(--accent); color: #0d0f12; border-color: var(--accent); font-family: var(--mono); letter-spacing: .03em; }
-.btn-primary:hover { opacity: .88; background: var(--accent); }
-.btn-sm { height: 34px; padding: 0 12px; font-size: 13px; }
-.btn-icon { width: 34px; height: 34px; padding: 0; border-radius: var(--r-sm); border: 1px solid var(--border); color: var(--dim); }
-.btn-icon:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
-.btn-full { width: 100%; height: 46px; font-size: 15px; }
-
-/* ═══════════════════════════════════════════════════════════
-   GOOGLE SHEETS SECTION
-═══════════════════════════════════════════════════════════ */
-.sheets-url-wrap { display: flex; gap: 8px; }
-.sheets-url-wrap input { flex: 1; font-size: 13px; }
-.sheets-status {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12px; font-family: var(--mono);
-  padding: 8px 12px;
-  border-radius: var(--r-sm);
-  margin-top: 8px;
+.sel-hdr span{font-size:11px;font-family:var(--mono);color:var(--dim);letter-spacing:.05em;text-transform:uppercase}
+.sel-row{
+  display:grid;grid-template-columns:36px 1fr 100px 80px 38px;
+  gap:8px;margin-bottom:8px;align-items:center;
 }
-.sheets-status.idle    { display:none; }
-.sheets-status.loading { background: var(--surface2); color: var(--muted); }
-.sheets-status.ok      { background: var(--green-bg); color: var(--green); border: 1px solid rgba(0,209,127,.2); }
-.sheets-status.error   { background: var(--red-bg);   color: var(--red);   border: 1px solid rgba(255,80,80,.2); }
-.spinner { width: 14px; height: 14px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ═══════════════════════════════════════════════════════════
-   SELECCIONES TABLE
-═══════════════════════════════════════════════════════════ */
-.sel-table { width: 100%; }
-.sel-header {
-  display: grid;
-  grid-template-columns: 28px 1fr 100px 80px 34px;
-  gap: 8px;
-  padding: 0 0 8px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
+.sel-row input{height:40px;font-size:14px}
+.sel-n{
+  width:36px;height:36px;background:var(--s2);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:13px;color:var(--muted);
 }
-.sel-header span {
-  font-size: 10px; font-family: var(--mono);
-  color: var(--dim); letter-spacing: .05em;
-  text-transform: uppercase;
-}
-.sel-row {
-  display: grid;
-  grid-template-columns: 28px 1fr 100px 80px 34px;
-  gap: 8px;
-  margin-bottom: 8px;
-  align-items: center;
-}
-.sel-num {
-  width: 28px; height: 28px;
-  background: var(--surface2);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 12px; color: var(--muted);
-}
-.sel-row input { height: 38px; font-size: 14px; }
 @media(max-width:500px){
-  .sel-header { grid-template-columns: 28px 1fr 88px 34px; }
-  .sel-header .h-ev { display:none; }
-  .sel-row { grid-template-columns: 28px 1fr 88px 34px; }
-  .sel-row .ev-input { display:none; }
+  .sel-hdr{grid-template-columns:36px 1fr 92px 38px}
+  .sel-hdr .hev,.sel-row .ev-inp{display:none}
+  .sel-row{grid-template-columns:36px 1fr 92px 38px}
 }
-.add-row-btn {
-  width: 100%; height: 38px;
-  border: 1px dashed var(--border2);
-  border-radius: var(--r-sm);
-  background: transparent; color: var(--muted);
-  font-size: 13px; cursor: pointer;
-  transition: all .15s; margin-top: 4px;
-  font-family: var(--sans);
+.add-btn{
+  width:100%;height:40px;
+  border:1px dashed var(--b2);border-radius:var(--r);
+  background:transparent;color:var(--muted);
+  font-size:14px;cursor:pointer;transition:all .15s;margin-top:6px;
+  font-family:var(--sans);
 }
-.add-row-btn:hover { border-color: var(--accent); color: var(--accent); }
+.add-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-/* ═══════════════════════════════════════════════════════════
-   CHIPS (sistemas rápidos)
-═══════════════════════════════════════════════════════════ */
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.chip {
-  padding: 5px 12px;
-  border: 1px solid var(--border2);
-  border-radius: 99px;
-  font-size: 12px; font-family: var(--mono);
-  color: var(--muted); cursor: pointer;
-  background: transparent; transition: all .15s;
+/* ═══ CHIPS ═══════════════════════════════════════════════════ */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.chip{
+  padding:6px 14px;border:1px solid var(--b2);border-radius:99px;
+  font-size:13px;font-family:var(--mono);color:var(--muted);
+  cursor:pointer;background:transparent;transition:all .15s;
 }
-.chip:hover { border-color: var(--accent); color: var(--accent); }
-.chip.active { border-color: var(--accent); color: #0d0f12; background: var(--accent); }
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{border-color:var(--accent);color:#0b0d10;background:var(--accent)}
+.sd{
+  display:none;background:var(--s2);border:1px solid var(--b2);
+  border-radius:var(--r);padding:16px 18px;margin-top:10px;
+}
+.sd.on{display:block;animation:fadeUp .18s ease}
+.sd-name{font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:4px}
+.sd-ap{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:10px}
+.sd-txt{font-size:14px;color:var(--text);line-height:1.65;margin-bottom:10px}
+.sd-uso{font-size:13px;color:var(--amber);background:var(--abg);border-radius:7px;padding:10px 12px;line-height:1.55}
 
-.sistema-desc {
-  display: none;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: var(--r-sm);
-  padding: 14px 16px;
-  margin-top: 10px;
-  animation: fadeUp .18s ease;
-}
-.sistema-desc.on { display: block; }
-.sd-name     { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 4px; }
-.sd-apuestas { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 10px; }
-.sd-text     { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 10px; }
-.sd-uso      { font-size: 12px; color: var(--amber); background: var(--amber-bg); border-radius: 6px; padding: 8px 10px; line-height: 1.5; }
+/* ═══ TOGGLE ══════════════════════════════════════════════════ */
+.tog-row{display:flex;align-items:center;gap:12px;cursor:pointer}
+.tog-lbl{font-size:15px;color:var(--muted);user-select:none}
+.tog{width:42px;height:22px;background:var(--b2);border-radius:99px;position:relative;transition:background .2s;flex-shrink:0}
+.tog::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:var(--muted);top:3px;left:3px;transition:all .2s}
+.tog.on{background:var(--accent)}
+.tog.on::after{left:23px;background:#0b0d10}
 
-/* ═══════════════════════════════════════════════════════════
-   TOGGLE SWITCH
-═══════════════════════════════════════════════════════════ */
-.toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.toggle-label { font-size: 14px; color: var(--muted); user-select: none; }
-.toggle {
-  width: 38px; height: 20px;
-  background: var(--border2); border-radius: 99px;
-  position: relative; transition: background .2s; flex-shrink: 0;
-}
-.toggle::after {
-  content: ''; position: absolute;
-  width: 14px; height: 14px; border-radius: 50%;
-  background: var(--muted); top: 3px; left: 3px;
-  transition: all .2s;
-}
-.toggle.on { background: var(--accent); }
-.toggle.on::after { left: 21px; background: #0d0f12; }
+/* ═══ DIVIDER ═════════════════════════════════════════════════ */
+hr{border:none;border-top:1px solid var(--b1);margin:4px 0}
 
-/* ═══════════════════════════════════════════════════════════
-   METRICS GRID
-═══════════════════════════════════════════════════════════ */
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+/* ═══ PLACEHOLDER ═════════════════════════════════════════════ */
+.ph{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:320px;gap:14px;color:var(--dim);text-align:center;
+  border:1px dashed var(--b2);border-radius:var(--rl);
 }
-@media(max-width:700px){ .metrics { grid-template-columns: repeat(2, 1fr); } }
-@media(max-width:400px){ .metrics { grid-template-columns: 1fr; } }
+.ph-ico{font-size:44px;opacity:.2}
+.ph p{font-size:15px;font-family:var(--mono);line-height:1.7}
 
-.metric {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  padding: 16px 18px;
-}
-.metric-label {
-  font-size: 10px; font-family: var(--mono);
-  color: var(--muted); letter-spacing: .07em;
-  text-transform: uppercase; margin-bottom: 8px;
-}
-.metric-value {
-  font-family: var(--mono); font-size: 26px; font-weight: 500;
-  line-height: 1.1;
-}
-.metric-value.g { color: var(--green); }
-.metric-value.r { color: var(--red); }
-.metric-value.a { color: var(--amber); }
-.metric-sub { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: var(--mono); }
+/* ═══ METRICS ═════════════════════════════════════════════════ */
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:720px){.metrics{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.metrics{grid-template-columns:1fr 1fr}}
+.metric{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rl);padding:20px 20px 16px}
+.m-lbl{font-size:11px;font-family:var(--mono);color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
+.m-val{font-family:var(--mono);font-size:28px;font-weight:500;line-height:1.05}
+.m-val.g{color:var(--green)}
+.m-val.r{color:var(--red)}
+.m-val.a{color:var(--amber)}
+.m-sub{font-size:12px;color:var(--muted);margin-top:6px;font-family:var(--mono)}
 
-/* ═══════════════════════════════════════════════════════════
-   RECOMENDACIONES
-═══════════════════════════════════════════════════════════ */
-.rec-list { display: flex; flex-direction: column; gap: 10px; }
-.rec-item {
-  display: flex; gap: 12px; align-items: flex-start;
-  padding: 14px 16px;
-  border-radius: var(--r-sm);
-  border: 1px solid transparent;
-  font-size: 14px; line-height: 1.58;
-}
-.rec-item.positive { background: var(--green-bg); border-color: rgba(0,209,127,.15); }
-.rec-item.warning  { background: var(--amber-bg); border-color: rgba(245,166,35,.15); }
-.rec-item.danger   { background: var(--red-bg);   border-color: rgba(255,80,80,.15); }
-.rec-item.info     { background: var(--blue-bg);  border-color: rgba(79,168,255,.15); }
-.rec-icon { font-size: 15px; margin-top: 1px; flex-shrink: 0; }
-.rec-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
-.rec-item.positive .rec-title { color: var(--green); }
-.rec-item.warning  .rec-title { color: var(--amber); }
-.rec-item.danger   .rec-title { color: var(--red); }
-.rec-item.info     .rec-title { color: var(--blue); }
-.rec-text { font-size: 13px; color: var(--text); }
+/* ═══ RECOMENDACIONES ═════════════════════════════════════════ */
+.recs{display:flex;flex-direction:column;gap:10px}
+.rec{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:var(--r);border:1px solid transparent}
+.rec.positive{background:var(--gbg);border-color:rgba(0,209,127,.15)}
+.rec.warning {background:var(--abg);border-color:rgba(245,166,35,.15)}
+.rec.danger  {background:var(--rbg);border-color:rgba(255,82,82,.15)}
+.rec.info    {background:var(--bbg);border-color:rgba(79,169,255,.15)}
+.rec-ico{font-size:16px;margin-top:2px;flex-shrink:0}
+.rec-ti{font-size:14px;font-weight:500;margin-bottom:4px}
+.rec.positive .rec-ti{color:var(--green)}
+.rec.warning  .rec-ti{color:var(--amber)}
+.rec.danger   .rec-ti{color:var(--red)}
+.rec.info     .rec-ti{color:var(--blue)}
+.rec-tx{font-size:13px;color:var(--text);line-height:1.6}
 
-/* ═══════════════════════════════════════════════════════════
-   TABS
-═══════════════════════════════════════════════════════════ */
-.tabs {
-  display: flex;
-  border-bottom: 1px solid var(--border);
-  padding: 0 18px;
-  overflow-x: auto;
-  scrollbar-width: none;
+/* ═══ TABS ════════════════════════════════════════════════════ */
+.tabs{display:flex;border-bottom:1px solid var(--b1);padding:0 20px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{
+  padding:14px 16px;font-size:14px;font-family:var(--mono);
+  color:var(--muted);background:transparent;border:none;
+  border-bottom:2px solid transparent;cursor:pointer;
+  margin-bottom:-1px;transition:color .15s;white-space:nowrap;
 }
-.tabs::-webkit-scrollbar { display: none; }
-.tab-btn {
-  padding: 12px 14px;
-  font-size: 13px; font-family: var(--mono);
-  color: var(--muted); background: transparent;
-  border: none; border-bottom: 2px solid transparent;
-  cursor: pointer; margin-bottom: -1px;
-  transition: color .15s; white-space: nowrap;
-}
-.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-.tab-btn:hover:not(.active) { color: var(--text); }
-.tab-body { padding: 18px; }
-.tab-pane { display: none; }
-.tab-pane.active { display: block; }
+.tab-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.on){color:var(--text)}
+.tab-body{padding:20px}
+.tp{display:none}
+.tp.on{display:block}
 
-/* ═══════════════════════════════════════════════════════════
-   TABLES
-═══════════════════════════════════════════════════════════ */
-.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table { width: 100%; border-collapse: collapse; }
-thead th {
-  font-family: var(--mono); font-size: 11px;
-  letter-spacing: .07em; text-transform: uppercase;
-  color: var(--muted); padding: 10px 14px;
-  text-align: left; border-bottom: 1px solid var(--border);
-  white-space: nowrap; background: var(--surface);
-  position: sticky; top: 0;
+/* ═══ TABLES ══════════════════════════════════════════════════ */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse}
+thead th{
+  font-family:var(--mono);font-size:11px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);
+  padding:12px 16px;text-align:left;
+  border-bottom:1px solid var(--b1);white-space:nowrap;
+  background:var(--s1);position:sticky;top:0;z-index:1;
 }
-tbody td {
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--mono); font-size: 13px;
-  color: var(--text); white-space: nowrap;
+tbody td{
+  padding:13px 16px;border-bottom:1px solid var(--b1);
+  font-family:var(--mono);font-size:14px;color:var(--text);white-space:nowrap;
 }
-tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: var(--surface2); }
-.td-name { font-family: var(--sans); font-size: 13px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--s2)}
+.tdn{font-family:var(--sans);font-size:14px;max-width:200px;overflow:hidden;text-overflow:ellipsis}
 
-/* ═══════════════════════════════════════════════════════════
-   TAGS
-═══════════════════════════════════════════════════════════ */
-.tag {
-  display: inline-block; padding: 4px 10px;
-  border-radius: 5px; font-family: var(--mono);
-  font-size: 12px; font-weight: 500;
-}
-.tg { background: var(--green-bg); color: var(--green); }
-.tr { background: var(--red-bg);   color: var(--red); }
-.ta { background: var(--amber-bg); color: var(--amber); }
-.tb { background: var(--blue-bg);  color: var(--blue); }
+/* ═══ TAGS ════════════════════════════════════════════════════ */
+.tag{display:inline-block;padding:4px 10px;border-radius:5px;font-family:var(--mono);font-size:13px;font-weight:500}
+.tg{background:var(--gbg);color:var(--green)}
+.tr{background:var(--rbg);color:var(--red)}
+.ta{background:var(--abg);color:var(--amber)}
+.tb{background:var(--bbg);color:var(--blue)}
 
-/* ═══════════════════════════════════════════════════════════
-   PLACEHOLDER
-═══════════════════════════════════════════════════════════ */
-.placeholder {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  height: 100%; min-height: 300px;
-  color: var(--dim); text-align: center; gap: 12px;
-}
-.placeholder-icon { font-size: 40px; opacity: .2; }
-.placeholder p { font-size: 14px; font-family: var(--mono); }
+/* ═══ NOTE ════════════════════════════════════════════════════ */
+.note{font-size:12px;color:var(--dim);font-family:var(--mono);margin-top:14px;line-height:1.6}
 
-/* ═══════════════════════════════════════════════════════════
-   DIVIDER
-═══════════════════════════════════════════════════════════ */
-.divider { height: 1px; background: var(--border); margin: 2px 0; }
+/* ═══ MODAL ═══════════════════════════════════════════════════ */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:400;align-items:center;justify-content:center;padding:20px}
+.modal-bg.on{display:flex}
+.modal-box{width:min(540px,96vw);background:var(--s1);border:1px solid var(--b2);border-radius:var(--rl);overflow:hidden}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
+.modal-head span{font-family:var(--mono);font-size:14px;font-weight:500}
+.modal-head button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1}
+.modal-body{padding:22px;max-height:72vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.m-step{background:var(--s2);border-radius:var(--r);padding:16px 18px}
+.m-step-title{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
+.m-code{background:var(--bg);border-radius:6px;padding:10px 14px;font-family:var(--mono);font-size:13px;color:var(--green);word-break:break-all;margin-top:8px}
 
-/* ═══════════════════════════════════════════════════════════
-   UTILS
-═══════════════════════════════════════════════════════════ */
-.note { font-size: 12px; color: var(--dim); font-family: var(--mono); margin-top: 12px; line-height: 1.5; }
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
-.anim { animation: fadeUp .22s ease both; }
+/* ═══ SCROLLBAR ═══════════════════════════════════════════════ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.anim{animation:fadeUp .22s ease both}
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo">⚽</div>
-  <span class="header-title">Sistema Betcalc</span>
-  <span class="header-sub">v2.0 · uso personal</span>
+  <span class="htitle">Sistema Betcalc</span>
+  <span class="hsub">v2.1 · uso personal</span>
 </header>
 
-<div class="app">
+<div class="page">
 
-<!-- ═══════════════════ SIDEBAR ═══════════════════════════ -->
+<!-- ══════════════════ SIDEBAR ═══════════════════════════════ -->
 <aside class="sidebar">
 
   <!-- Google Sheets -->
   <div class="card">
     <div class="card-head">
-      <div class="card-head-icon" style="background:rgba(52,168,83,.12)">📊</div>
-      <span class="card-title">Google Sheets</span>
+      <div class="ch-icon" style="background:rgba(52,168,83,.12)">📊</div>
+      <span class="ch-title">Google Sheets</span>
     </div>
     <div class="card-body">
-      <div class="form-group">
-        <label class="label">URL pública del CSV</label>
-        <div class="sheets-url-wrap">
-          <input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/.../export?format=csv">
-          <button class="btn btn-sm" onclick="cargarSheets()">Cargar</button>
+      <div class="fg">
+        <label class="lbl">URL pública del CSV</label>
+        <div class="sh-row">
+          <input type="text" id="sh-url" placeholder="https://docs.google.com/spreadsheets/d/…" style="font-size:13px">
+          <button class="btn btn-sm" onclick="loadSheets()">Cargar</button>
         </div>
-        <div class="sheets-status idle" id="sheets-status"></div>
+        <div class="sh-status" id="sh-st"></div>
       </div>
-      <div style="font-size:12px;color:var(--dim);font-family:var(--mono);line-height:1.6">
-        Columnas esperadas: <span style="color:var(--accent)">Nombre · Cuota · EV%</span><br>
-        <a href="#" onclick="mostrarAyudaSheets(event)" style="color:var(--blue);text-decoration:none">¿Cómo obtener la URL? →</a>
+      <div style="font-size:13px;color:var(--dim);line-height:1.7;font-family:var(--mono)">
+        Columnas: <span style="color:var(--accent)">A=Nombre · B=Cuota · C=EV%</span><br>
+        <a href="#" onclick="showModal(event)" style="color:var(--blue);text-decoration:none;font-size:12px">¿Cómo configurar? →</a>
       </div>
     </div>
   </div>
@@ -506,53 +350,50 @@ tbody tr:hover { background: var(--surface2); }
   <!-- Selecciones -->
   <div class="card">
     <div class="card-head">
-      <div class="card-head-icon" style="background:rgba(0,209,127,.1)">🎯</div>
-      <span class="card-title">Selecciones</span>
-      <span class="card-badge" id="sel-count">0 sel.</span>
+      <div class="ch-icon" style="background:rgba(0,209,127,.1)">🎯</div>
+      <span class="ch-title">Selecciones</span>
+      <span class="ch-badge" id="sel-count">0 sel.</span>
     </div>
-    <div class="card-body" style="padding-bottom:8px">
-      <div class="sel-header">
-        <span></span>
-        <span>Nombre</span>
-        <span>Cuota</span>
-        <span class="h-ev">EV%</span>
-        <span></span>
+    <div class="card-body" style="padding-bottom:12px">
+      <div class="sel-hdr">
+        <span></span><span>Nombre</span><span>Cuota</span>
+        <span class="hev">EV%</span><span></span>
       </div>
       <div id="sel-list"></div>
-      <button class="add-row-btn" onclick="addSel()">+ añadir selección manual</button>
+      <button class="add-btn" onclick="addSel()">+ añadir selección</button>
     </div>
   </div>
 
-  <!-- Configuración -->
+  <!-- Sistema -->
   <div class="card">
     <div class="card-head">
-      <div class="card-head-icon" style="background:rgba(79,168,255,.1)">⚙️</div>
-      <span class="card-title">Sistema</span>
+      <div class="ch-icon" style="background:rgba(79,169,255,.1)">⚙️</div>
+      <span class="ch-title">Sistema y stake</span>
     </div>
     <div class="card-body">
 
-      <div class="form-group">
-        <label class="label">Monto total a invertir</label>
-        <div class="input-prefix-wrap">
-          <span class="input-prefix">CLP$</span>
-          <input type="text" id="stake-display" value="50.000" inputmode="numeric" oninput="formatStake(this)">
-          <input type="hidden" id="stake-raw" value="50000">
+      <div class="fg">
+        <label class="lbl">Monto total a invertir</label>
+        <div class="pfx-wrap">
+          <span class="pfx">CLP$</span>
+          <input type="text" id="stk-d" value="50.000" inputmode="numeric" oninput="fmtStake(this)">
+          <input type="hidden" id="stk-r" value="50000">
         </div>
       </div>
 
-      <div class="form-row-2 form-group">
+      <div class="row2 fg">
         <div>
-          <label class="label">Mín. por parlay (k)</label>
+          <label class="lbl">Mín. por parlay (k)</label>
           <select id="min-k"></select>
         </div>
         <div>
-          <label class="label">Máx. por parlay</label>
+          <label class="lbl">Máx. por parlay</label>
           <select id="max-k"></select>
         </div>
       </div>
 
-      <div class="form-group">
-        <label class="label" style="margin-bottom:8px">Sistemas rápidos</label>
+      <div class="fg">
+        <label class="lbl" style="margin-bottom:10px">Sistemas rápidos</label>
         <div class="chips" id="chips">
           <button class="chip" data-s="trixie">Trixie</button>
           <button class="chip" data-s="patent">Patent</button>
@@ -562,41 +403,38 @@ tbody tr:hover { background: var(--surface2); }
           <button class="chip" data-s="lucky63">Lucky 63</button>
           <button class="chip" data-s="heinz">Heinz</button>
         </div>
-        <div class="sistema-desc" id="sd">
+        <div class="sd" id="sd">
           <div class="sd-name" id="sd-name"></div>
-          <div class="sd-apuestas" id="sd-ap"></div>
-          <div class="sd-text" id="sd-txt"></div>
-          <div class="sd-uso" id="sd-uso"></div>
+          <div class="sd-ap"   id="sd-ap"></div>
+          <div class="sd-txt"  id="sd-txt"></div>
+          <div class="sd-uso"  id="sd-uso"></div>
         </div>
       </div>
 
-      <div class="divider" style="margin:16px 0"></div>
+      <hr style="margin:8px 0 16px">
 
-      <div class="form-group" style="margin-bottom:0">
-        <label class="toggle-row" onclick="toggleEV()" style="margin-bottom:0">
-          <div class="toggle" id="ev-toggle"></div>
-          <span class="toggle-label">Incluir análisis de EV</span>
-        </label>
-      </div>
+      <label class="tog-row fg" onclick="toggleEV()">
+        <div class="tog" id="ev-tog"></div>
+        <span class="tog-lbl">Análisis de valor esperado (EV)</span>
+      </label>
 
-      <div class="divider" style="margin:16px 0"></div>
+      <hr style="margin:8px 0 16px">
 
-      <button class="btn btn-primary btn-full" onclick="calcular()">CALCULAR →</button>
-
+      <button class="btn btn-accent btn-full" onclick="calcular()">CALCULAR →</button>
     </div>
   </div>
 
 </aside>
 
-<!-- ═══════════════════ CONTENT ═══════════════════════════ -->
-<main class="content" id="content-area">
+<!-- ══════════════════ CONTENT ════════════════════════════════ -->
+<main class="content">
 
-  <div class="placeholder" id="placeholder">
-    <div class="placeholder-icon">📊</div>
-    <p>Ingresa tus selecciones<br>y pulsa calcular</p>
+  <div class="ph" id="ph">
+    <div class="ph-ico">📊</div>
+    <p>Ingresa tus selecciones<br>y pulsa <strong>Calcular</strong></p>
   </div>
 
-  <div id="results" style="display:none">
+  <div id="results" style="display:none;flex-direction:column;gap:20px">
 
     <!-- Métricas -->
     <div class="metrics anim" id="metrics"></div>
@@ -604,298 +442,296 @@ tbody tr:hover { background: var(--surface2); }
     <!-- Recomendaciones -->
     <div class="card anim">
       <div class="card-head">
-        <div class="card-head-icon" style="background:var(--amber-bg)">💡</div>
-        <span class="card-title">Análisis del experto</span>
-        <span class="card-badge" id="rec-count"></span>
+        <div class="ch-icon" style="background:var(--abg)">💡</div>
+        <span class="ch-title">Análisis del experto</span>
+        <span class="ch-badge" id="rec-n"></span>
       </div>
       <div class="card-body">
-        <div class="rec-list" id="rec-list"></div>
+        <div class="recs" id="recs"></div>
       </div>
     </div>
 
     <!-- Tablas -->
     <div class="card anim">
       <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('esc',this)">Escenarios</button>
-        <button class="tab-btn" onclick="showTab('par',this)">Parlays</button>
-        <button class="tab-btn" onclick="showTab('comp',this)">Sistemas</button>
-        <button class="tab-btn" id="tab-ev-btn" onclick="showTab('ev',this)" style="display:none">EV</button>
+        <button class="tab-btn on" onclick="showTab('esc',this)">Escenarios</button>
+        <button class="tab-btn"   onclick="showTab('par',this)">Parlays</button>
+        <button class="tab-btn"   onclick="showTab('cmp',this)">Sistemas</button>
+        <button class="tab-btn"   onclick="showTab('ev',this)"  id="tb-ev" style="display:none">EV</button>
       </div>
       <div class="tab-body">
-        <div class="tab-pane active" id="tab-esc"></div>
-        <div class="tab-pane" id="tab-par"></div>
-        <div class="tab-pane" id="tab-comp"></div>
-        <div class="tab-pane" id="tab-ev"></div>
+        <div class="tp on" id="tp-esc"></div>
+        <div class="tp"    id="tp-par"></div>
+        <div class="tp"    id="tp-cmp"></div>
+        <div class="tp"    id="tp-ev"></div>
       </div>
     </div>
 
   </div>
-
 </main>
 </div>
 
-<!-- ═══════════════════ MODAL AYUDA SHEETS ════════════════ -->
-<div id="modal-overlay" onclick="cerrarModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:center;justify-content:center;padding:20px"></div>
-<div id="modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:501;width:min(520px,95vw);background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);overflow:hidden">
-  <div style="padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-    <span style="font-family:var(--mono);font-size:13px;font-weight:500">Cómo conectar Google Sheets</span>
-    <button onclick="cerrarModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1">✕</button>
-  </div>
-  <div style="padding:20px;font-size:13px;line-height:1.7;max-height:70vh;overflow-y:auto">
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="background:var(--surface2);border-radius:var(--r-sm);padding:14px 16px">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:8px">PASO 1 — Crear la planilla</div>
-        <p style="color:var(--text)">Crea un Google Sheet con exactamente estas columnas en la fila 1:</p>
-        <div style="background:var(--bg);border-radius:6px;padding:10px 14px;margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--green)">
-          A: Nombre &nbsp;|&nbsp; B: Cuota &nbsp;|&nbsp; C: EV%
-        </div>
-        <p style="color:var(--muted);font-size:12px;margin-top:8px">Desde la fila 2 en adelante, agrega un partido por fila. La columna EV% es opcional (deja vacía si no la usas).</p>
+<!-- ══════════════════ MODAL AYUDA ═══════════════════════════ -->
+<div class="modal-bg" id="modal-bg" onclick="hideModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <span>Cómo conectar Google Sheets</span>
+      <button onclick="hideModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-step">
+        <div class="m-step-title">Paso 1 — Crear la planilla</div>
+        <p style="font-size:14px;color:var(--text)">Crea un Google Sheet con estas columnas exactas en la fila 1:</p>
+        <div class="m-code">A: Nombre &nbsp;|&nbsp; B: Cuota &nbsp;|&nbsp; C: EV%</div>
+        <p style="font-size:13px;color:var(--muted);margin-top:10px">Desde la fila 2, un partido por fila. EV% es opcional (déjalo vacío si no lo usas). Las cuotas deben ir en formato decimal: <span style="color:var(--green)">1.85</span> o <span style="color:var(--green)">1,85</span> (ambos funcionan).</p>
       </div>
-      <div style="background:var(--surface2);border-radius:var(--r-sm);padding:14px 16px">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:8px">PASO 2 — Publicar como CSV</div>
-        <ol style="padding-left:18px;color:var(--text);display:flex;flex-direction:column;gap:6px">
-          <li>En el Sheet: <strong>Archivo → Compartir → Publicar en la web</strong></li>
-          <li>En "Enlace", selecciona la hoja (ej: <em>Hoja1</em>)</li>
-          <li>En el formato, elige <strong>Valores separados por comas (.csv)</strong></li>
-          <li>Clic en <strong>Publicar</strong> y confirma</li>
+      <div class="m-step">
+        <div class="m-step-title">Paso 2 — Publicar como CSV</div>
+        <ol style="padding-left:20px;font-size:14px;color:var(--text);display:flex;flex-direction:column;gap:8px">
+          <li>Menú: <strong>Archivo → Compartir → Publicar en la web</strong></li>
+          <li>Selecciona la hoja (ej: <em>Hoja1</em>)</li>
+          <li>Formato: <strong>Valores separados por comas (.csv)</strong></li>
+          <li>Clic en <strong>Publicar</strong> → confirmar</li>
           <li>Copia la URL generada</li>
         </ol>
       </div>
-      <div style="background:var(--surface2);border-radius:var(--r-sm);padding:14px 16px">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:8px">PASO 3 — Pegar en la calculadora</div>
-        <p style="color:var(--text)">Pega la URL en el campo "URL pública del CSV" y haz clic en <strong>Cargar</strong>. Las selecciones se importarán automáticamente.</p>
-        <p style="color:var(--muted);font-size:12px;margin-top:8px">La URL tiene el formato:<br><span style="color:var(--green);font-family:var(--mono);font-size:11px;word-break:break-all">https://docs.google.com/spreadsheets/d/ID/pub?gid=0&single=true&output=csv</span></p>
+      <div class="m-step">
+        <div class="m-step-title">Paso 3 — Pegar URL en la calculadora</div>
+        <p style="font-size:14px;color:var(--text)">Pega la URL en el campo superior y pulsa <strong>Cargar</strong>. Formato esperado:</p>
+        <div class="m-code">https://docs.google.com/spreadsheets/d/ID/pub?gid=0&single=true&output=csv</div>
       </div>
-      <div style="background:var(--amber-bg);border:1px solid rgba(245,166,35,.2);border-radius:var(--r-sm);padding:12px 14px;font-size:12px;color:var(--amber)">
-        ⚡ Cada vez que actualices la planilla, solo pulsa "Cargar" de nuevo para refrescar los datos en la calculadora.
+      <div style="background:var(--abg);border:1px solid rgba(245,166,35,.2);border-radius:var(--r);padding:14px 16px;font-size:13px;color:var(--amber)">
+        ⚡ Cada vez que actualices la planilla, pulsa "Cargar" de nuevo para refrescar los datos.
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════ JS ═════════════════════════════════ -->
 <script>
-// ── DATOS DE SISTEMAS ──────────────────────────────────────────
-const NAMED = {
-  trixie:  {n:3,min_k:2,max_k:3,
-    label:'Trixie — 3 selecciones · 4 apuestas',apuestas:'3 dobles + 1 treble',
-    text:'El Trixie toma 3 selecciones y genera los 3 posibles dobles más el parlay completo. Es el sistema más popular para partidos de alta confianza: basta con acertar 2 de 3 para tener retorno. El treble (las 3 juntas) es el gran premio.',
-    uso:'Ideal con 3 favoritos claros con cuotas entre 1.60 y 2.20. Perfecto para jornadas europeas donde el análisis respalda fuertemente cada selección.'},
-  patent:  {n:3,min_k:1,max_k:3,
-    label:'Patent — 3 selecciones · 7 apuestas',apuestas:'3 singles + 3 dobles + 1 treble',
-    text:'El Patent añade los 3 singles al Trixie cubriendo todas las combinaciones posibles. Ganarás retorno aunque solo aciertes 1 de 3. El coste es mayor pero la protección es máxima.',
-    uso:'Úsalo cuando una selección tenga cuota alta (sobre 3.00) y quieras que valga la pena aunque sea la única que aciertes.'},
-  yankee:  {n:4,min_k:2,max_k:4,
-    label:'Yankee — 4 selecciones · 11 apuestas',apuestas:'6 dobles + 4 trebles + 1 cuádruple',
-    text:'El Yankee genera todas las combinaciones de 2, 3 y 4 selecciones. Para recuperar el stake necesitas al menos 2 aciertos. Con 3 ya obtienes ganancias importantes.',
-    uso:'El sistema más usado por analíticos en fútbol europeo. Óptimo con cuotas entre 1.80 y 2.50. Mejor equilibrio entre cobertura y retorno.'},
-  lucky15: {n:4,min_k:1,max_k:4,
-    label:'Lucky 15 — 4 selecciones · 15 apuestas',apuestas:'4 singles + 6 dobles + 4 trebles + 1 cuádruple',
-    text:'El Yankee más los 4 singles. Cubre absolutamente todas las combinaciones posibles de 1 a 4 selecciones. Si solo aciertas 1 de 4, igual obtienes retorno.',
-    uso:'Úsalo cuando al menos una selección tenga cuota alta (sobre 3.50). Que acertar solo esa ya justifique parte de la inversión es el principio del Lucky 15.'},
-  lucky31: {n:5,min_k:1,max_k:5,
-    label:'Lucky 31 — 5 selecciones · 31 apuestas',apuestas:'5 singles + 10 dobles + 10 trebles + 5 cuádruples + 1 quíntuple',
-    text:'Cubre todas las 31 combinaciones de 5 selecciones. Para apostadores con alta confianza que igual quieren protección ante fallos individuales.',
-    uso:'Recomendado con cuotas 1.80–3.00. El quíntuple entrega un retorno muy alto si todo sale bien. Exige investigación seria de los 5 partidos.'},
-  lucky63: {n:6,min_k:1,max_k:6,
-    label:'Lucky 63 — 6 selecciones · 63 apuestas',apuestas:'6 singles + 15 dobles + 20 trebles + 15 cuádruples + 6 quíntuples + 1 séxtuple',
-    text:'Cubre absolutamente todas las 63 combinaciones de 6 selecciones. Garantiza retorno desde 1 acierto. El stake por apuesta es bajo pero el volumen total es alto.',
-    uso:'Solo si tienes 6 selecciones bien fundamentadas y bankroll sólido. Cuotas 1.60–2.20 mantienen el stake por apuesta manejable.'},
-  heinz:   {n:6,min_k:2,max_k:6,
-    label:'Heinz — 6 selecciones · 57 apuestas',apuestas:'15 dobles + 20 trebles + 15 cuádruples + 6 quíntuples + 1 séxtuple',
-    text:'Lucky 63 sin los 6 singles. 57 apuestas, combinaciones de 2 a 6 selecciones. Necesitas al menos 2 aciertos para tener retorno.',
-    uso:'Úsalo cuando las 6 selecciones sean de cuota similar y no haya un comodín de cuota muy alta. Reduce gasto frente al Lucky 63.'},
+// ── SISTEMAS ──────────────────────────────────────────────────
+const NAMED={
+  trixie:{n:3,mk:2,xk:3,label:'Trixie — 3 sel. · 4 apuestas',ap:'3 dobles + 1 treble',
+    txt:'El Trixie genera los 3 posibles dobles más el parlay completo de las 3 selecciones. El sistema más popular para partidos de alta confianza: basta con acertar 2 de 3 para tener retorno. El treble (las 3 juntas) es el gran premio.',
+    uso:'Ideal con 3 favoritos de cuota entre 1.60 y 2.20. Perfecto para jornadas europeas donde el análisis respalda fuertemente cada selección.'},
+  patent:{n:3,mk:1,xk:3,label:'Patent — 3 sel. · 7 apuestas',ap:'3 singles + 3 dobles + 1 treble',
+    txt:'El Patent añade los 3 singles al Trixie cubriendo todas las combinaciones posibles. Ganarás retorno aunque solo aciertes 1 de 3. Máxima protección al mayor coste.',
+    uso:'Úsalo cuando una selección tenga cuota sobre 3.00 y quieras que valga la pena aunque sea la única que aciertes.'},
+  yankee:{n:4,mk:2,xk:4,label:'Yankee — 4 sel. · 11 apuestas',ap:'6 dobles + 4 trebles + 1 cuádruple',
+    txt:'El Yankee genera todas las combinaciones de 2, 3 y 4 selecciones. Para recuperar el stake necesitas al menos 2 aciertos. Con 3 ya obtienes ganancias importantes.',
+    uso:'El estándar entre apostadores analíticos. Óptimo con cuotas 1.80–2.50. Mejor equilibrio entre cobertura y retorno.'},
+  lucky15:{n:4,mk:1,xk:4,label:'Lucky 15 — 4 sel. · 15 apuestas',ap:'4 singles + 6 dobles + 4 trebles + 1 cuádruple',
+    txt:'El Yankee más los 4 singles. Cubre absolutamente todas las combinaciones posibles. Si solo aciertas 1 de 4, igual obtienes retorno.',
+    uso:'Úsalo cuando al menos una selección tenga cuota sobre 3.50. Ese single solo ya puede rescatar gran parte del stake.'},
+  lucky31:{n:5,mk:1,xk:5,label:'Lucky 31 — 5 sel. · 31 apuestas',ap:'5 singles + 10 dobles + 10 trebles + 5 cuádruples + 1 quíntuple',
+    txt:'Cubre todas las 31 combinaciones de 5 selecciones. Para apostadores con alta confianza que igualmente quieren protección ante fallos individuales.',
+    uso:'Con cuotas 1.80–3.00. El quíntuple entrega retorno muy alto si todo sale bien. Exige investigación seria de cada partido.'},
+  lucky63:{n:6,mk:1,xk:6,label:'Lucky 63 — 6 sel. · 63 apuestas',ap:'6 singles + 15 dobles + 20 trebles + 15 cuádruples + 6 quíntuples + 1 séxtuple',
+    txt:'Cubre absolutamente todas las 63 combinaciones de 6 selecciones. Garantiza retorno desde 1 acierto.',
+    uso:'Solo con 6 selecciones bien fundamentadas y bankroll sólido. Cuotas 1.60–2.20 mantienen el stake por apuesta manejable.'},
+  heinz:{n:6,mk:2,xk:6,label:'Heinz — 6 sel. · 57 apuestas',ap:'15 dobles + 20 trebles + 15 cuádruples + 6 quíntuples + 1 séxtuple',
+    txt:'Lucky 63 sin los 6 singles. 57 apuestas con combinaciones de 2 a 6 selecciones. Necesitas al menos 2 aciertos para tener retorno.',
+    uso:'Preferible al Lucky 63 cuando las 6 cuotas son similares y ninguna es un comodín de cuota muy alta.'},
 };
 
-let sels = [];
-let evEnabled = false;
-let activeChip = null;
+let sels=[], evOn=false, activeChip=null;
 
 // ── INIT ──────────────────────────────────────────────────────
-(function(){
+;(function(){
   addSel(1.85,'',50); addSel(2.10,'',48); addSel(3.40,'',32);
   document.querySelectorAll('.chip').forEach(c=>{
     c.addEventListener('click',()=>setSistema(c.dataset.s,c));
   });
-  // Cargar URL guardada
-  const saved = localStorage.getItem('sheetsUrl');
-  if(saved) document.getElementById('sheets-url').value=saved;
+  const saved=localStorage.getItem('sh-url');
+  if(saved) document.getElementById('sh-url').value=saved;
 })();
 
-// ── GOOGLE SHEETS ─────────────────────────────────────────────
-function mostrarAyudaSheets(e){
-  e.preventDefault();
-  document.getElementById('modal').style.display='block';
-  document.getElementById('modal-overlay').style.display='flex';
-}
-function cerrarModal(){
-  document.getElementById('modal').style.display='none';
-  document.getElementById('modal-overlay').style.display='none';
-}
+// ── MODAL ─────────────────────────────────────────────────────
+function showModal(e){ e&&e.preventDefault(); document.getElementById('modal-bg').classList.add('on'); }
+function hideModal(e){ if(!e||e.target===document.getElementById('modal-bg')) document.getElementById('modal-bg').classList.remove('on'); }
 
-async function cargarSheets(){
-  const url = document.getElementById('sheets-url').value.trim();
-  if(!url){ alert('Pega primero la URL del CSV de Google Sheets.'); return; }
-  localStorage.setItem('sheetsUrl', url);
+// ── GOOGLE SHEETS — carga con fallback de proxies ─────────────
+const PROXIES=[
+  u=>`https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  u=>`https://thingproxy.freeboard.io/fetch/${u}`,
+];
 
-  const st = document.getElementById('sheets-status');
-  st.className='sheets-status loading';
-  st.innerHTML='<div class="spinner"></div> Conectando...';
+async function loadSheets(){
+  const url=document.getElementById('sh-url').value.trim();
+  if(!url){alert('Pega primero la URL del CSV.');return;}
+  localStorage.setItem('sh-url',url);
+  const st=document.getElementById('sh-st');
+  let csv=null, lastErr='';
 
-  // Proxies CORS en orden de prioridad — se prueba el siguiente si el anterior falla
-  const PROXIES = [
-    u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-    u => `https://thingproxy.freeboard.io/fetch/${u}`,
-  ];
-
-  let csv = null;
-  let lastErr = '';
-
-  for(let i=0; i<PROXIES.length; i++){
-    const proxyUrl = PROXIES[i](url);
-    st.innerHTML=`<div class="spinner"></div> Probando conexión ${i+1}/${PROXIES.length}...`;
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(()=>controller.abort(), 8000);
-      const res = await fetch(proxyUrl, { signal: controller.signal });
-      clearTimeout(timeout);
+  for(let i=0;i<PROXIES.length;i++){
+    st.className='sh-status loading';
+    st.innerHTML=`<div class="spinner"></div> Probando conexión ${i+1}/${PROXIES.length}…`;
+    try{
+      const ctrl=new AbortController();
+      const tid=setTimeout(()=>ctrl.abort(),9000);
+      const res=await fetch(PROXIES[i](url),{signal:ctrl.signal});
+      clearTimeout(tid);
       if(!res.ok) throw new Error('HTTP '+res.status);
-      const text = await res.text();
-      // Validar que parece un CSV real (no un error HTML del proxy)
-      if(text.trim().startsWith('<')) throw new Error('Respuesta HTML — proxy bloqueado');
-      if(text.trim().length < 5)      throw new Error('Respuesta vacía');
-      csv = text;
-      break; // éxito — salir del loop
-    } catch(e){
-      lastErr = e.message || String(e);
-    }
+      const txt=await res.text();
+      if(txt.trim().startsWith('<')) throw new Error('Respuesta HTML — proxy bloqueado');
+      if(txt.trim().length<5)        throw new Error('Respuesta vacía');
+      csv=txt; break;
+    }catch(e){ lastErr=e.name==='AbortError'?'Timeout':e.message; }
   }
 
   if(!csv){
-    st.className='sheets-status error';
-    st.innerHTML=`✕ Todos los proxies fallaron. Verifica que la URL del Sheet sea pública y en formato CSV.<br><span style="font-size:11px;opacity:.7">${lastErr}</span>`;
+    st.className='sh-status error';
+    st.innerHTML=`<span>✕ Todos los proxies fallaron. Verifica que la URL sea pública y en formato CSV.</span><span style="font-size:11px;opacity:.7">${lastErr}</span>`;
     return;
   }
 
-  try {
-    // Normalizar saltos de línea y procesar
-    csv = csv.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
-    const rows = parseCSV(csv);
-    if(rows.length < 2) throw new Error('La planilla está vacía o no tiene datos desde la fila 2.');
+  try{
+    // ── PARSEO ROBUSTO DEL CSV ─────────────────────────────────
+    csv=csv.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
 
-    // Limpiar selecciones y cargar
-    sels = [];
-    let count = 0;
-    rows.slice(1).forEach(row => {
-      const nombre = (row[0]||'').trim();
-      const cuota  = parseFloat((row[1]||'').replace(',','.'));
-      const ev     = parseFloat((row[2]||'').replace(',','.'));
+    // Detectar separador: si la primera línea tiene más ';' que ',', usar ';'
+    const firstLine=csv.split('\n')[0]||'';
+    const sep=(firstLine.split(';').length>firstLine.split(',').length)?';':',';
+
+    const rows=parseCSV(csv, sep);
+    if(rows.length<2) throw new Error('La planilla está vacía o sin datos desde la fila 2.');
+
+    sels=[];
+    let count=0;
+    rows.slice(1).forEach(row=>{
+      const nombre=(row[0]||'').trim().replace(/^["']|["']$/g,'');
+      // Número robusto — maneja 1.85 | 1,85 | "1,85" | 1 850 etc.
+      const cuota=parseRobustNum(row[1]);
+      const ev=parseRobustNum(row[2]);
       if(isNaN(cuota)||cuota<=1) return;
       sels.push({id:Date.now()+Math.random(), nombre, cuota, ev:isNaN(ev)?'':ev});
       count++;
     });
-    if(count===0) throw new Error('No se encontraron selecciones válidas. Verifica que la columna Cuota tenga valores > 1.');
+
+    if(count===0) throw new Error('No se encontraron cuotas válidas (>1.0). Revisa la columna B del Sheet.');
 
     renderSels();
-    st.className='sheets-status ok';
-    st.innerHTML=`✓ ${count} selecciones cargadas correctamente`;
-    setTimeout(()=>{ st.className='sheets-status idle'; },4000);
-
-  } catch(err) {
-    st.className='sheets-status error';
-    st.innerHTML='✕ Error: '+err.message;
+    st.className='sh-status ok';
+    st.innerHTML=`✓ ${count} selecciones importadas`;
+    setTimeout(()=>{st.className='sh-status';st.style.display='none';},5000);
+  }catch(err){
+    st.className='sh-status error';
+    st.innerHTML=`<span>✕ Error al procesar: ${err.message}</span>`;
   }
 }
 
-function parseCSV(text){
+// ── PARSEO CSV ROBUSTO ────────────────────────────────────────
+function parseCSV(text, sep=','){
   return text.trim().split('\n').map(line=>{
     const cols=[];
     let cur='', inQ=false;
     for(let i=0;i<line.length;i++){
       const ch=line[i];
-      if(ch==='"'){ inQ=!inQ; }
-      else if(ch===','&&!inQ){ cols.push(cur); cur=''; }
-      else { cur+=ch; }
+      if(ch==='"'||ch==="'"){inQ=!inQ;}
+      else if(ch===sep&&!inQ){cols.push(cur.trim());cur='';}
+      else{cur+=ch;}
     }
-    cols.push(cur);
+    cols.push(cur.trim());
     return cols;
   });
 }
 
-// ── STAKE FORMATEADO ──────────────────────────────────────────
-function formatStake(el){
-  const raw = el.value.replace(/\D/g,'')||'0';
-  const num = parseInt(raw,10);
-  document.getElementById('stake-raw').value = num;
-  el.value = num.toLocaleString('es-CL').replace(/,/g,'.');
+// ── PARSEO NUMÉRICO ROBUSTO ───────────────────────────────────
+// Maneja: 1.85 | 1,85 | "1,85" | 1.850 | 1 850 | 185% | etc.
+function parseRobustNum(raw){
+  if(raw===undefined||raw===null) return NaN;
+  let s=String(raw).trim()
+    .replace(/^["']+|["']+$/g,'')   // quitar comillas
+    .replace(/%$/,'')               // quitar % si lo hay
+    .replace(/\s/g,'');             // quitar espacios
+  if(!s) return NaN;
+
+  // Detectar cuál es el separador decimal:
+  // Si tiene AMBOS . y , → el que aparece ÚLTIMO es decimal
+  const lastDot  =s.lastIndexOf('.');
+  const lastComma=s.lastIndexOf(',');
+
+  if(lastComma>lastDot){
+    // La coma es decimal (ej: 1,85 o 1.000,85)
+    s=s.replace(/\./g,'').replace(',','.');
+  } else if(lastDot>lastComma){
+    // El punto es decimal (ej: 1.85 o 1,000.85)
+    s=s.replace(/,/g,'');
+  } else {
+    // Solo uno de los dos o ninguno — reemplazar coma por punto
+    s=s.replace(',','.');
+  }
+  return parseFloat(s);
 }
-function getStake(){ return parseFloat(document.getElementById('stake-raw').value)||0; }
+
+// ── STAKE ─────────────────────────────────────────────────────
+function fmtStake(el){
+  const n=parseInt(el.value.replace(/\D/g,'')||'0',10);
+  document.getElementById('stk-r').value=n;
+  el.value=n.toLocaleString('es-CL').replace(/,/g,'.');
+}
+function getStake(){return parseFloat(document.getElementById('stk-r').value)||0;}
 
 // ── SELECCIONES ───────────────────────────────────────────────
-function addSel(cuota='', nombre='', ev=''){
-  sels.push({id:Date.now()+Math.random(), cuota:cuota||'', nombre:nombre||'', ev:ev||''});
+function addSel(cuota='',nombre='',ev=''){
+  sels.push({id:Date.now()+Math.random(),cuota:cuota||'',nombre:nombre||'',ev:ev||''});
   renderSels();
 }
-function removeSel(id){ sels=sels.filter(s=>s.id!==id); renderSels(); }
-
+function removeSel(id){sels=sels.filter(s=>s.id!==id);renderSels();}
 function renderSels(){
   const list=document.getElementById('sel-list');
   list.innerHTML='';
   sels.forEach((s,i)=>{
-    const row=document.createElement('div');
-    row.className='sel-row';
-    row.innerHTML=`
-      <div class="sel-num">${i+1}</div>
-      <input type="text" placeholder="ej: Real Madrid G" value="${s.nombre}" oninput="sels[${i}].nombre=this.value">
+    const d=document.createElement('div');
+    d.className='sel-row';
+    d.innerHTML=`
+      <div class="sel-n">${i+1}</div>
+      <input type="text"   placeholder="ej: Real Madrid G" value="${s.nombre}" oninput="sels[${i}].nombre=this.value">
       <input type="number" placeholder="1.85" value="${s.cuota}" step="0.01" min="1.01" oninput="sels[${i}].cuota=this.value">
-      <input type="number" class="ev-input" placeholder="50" value="${s.ev}" min="1" max="99" step="1" title="Probabilidad estimada %" oninput="sels[${i}].ev=this.value">
-      <button class="btn btn-icon" onclick="removeSel(${s.id})">✕</button>
-    `;
-    list.appendChild(row);
+      <input type="number" class="ev-inp" placeholder="%" value="${s.ev}" min="1" max="99" step="1" title="Probabilidad estimada %" oninput="sels[${i}].ev=this.value">
+      <button class="btn btn-ico" onclick="removeSel(${s.id})">✕</button>`;
+    list.appendChild(d);
   });
   document.getElementById('sel-count').textContent=sels.length+' sel.';
-  updateKSelects();
+  updateK();
 }
-
-function updateKSelects(){
+function updateK(){
   const n=sels.length;
   ['min-k','max-k'].forEach((id,ii)=>{
     const el=document.getElementById(id);
-    const cur=parseInt(el.value)||(ii===0?2:n);
+    const cur=parseInt(el.value)||(ii?n:2);
     el.innerHTML='';
     for(let i=1;i<=n;i++) el.add(new Option(i,i));
     el.value=Math.min(Math.max(cur,1),n);
   });
 }
 
-// ── SISTEMAS RÁPIDOS ──────────────────────────────────────────
-function setSistema(name, btn){
-  const cfg=NAMED[name]; if(!cfg) return;
-  while(sels.length<cfg.n) sels.push({id:Date.now()+Math.random(),cuota:'',nombre:'',ev:''});
-  while(sels.length>cfg.n) sels.pop();
+// ── SISTEMAS ──────────────────────────────────────────────────
+function setSistema(name,btn){
+  const c=NAMED[name]; if(!c) return;
+  while(sels.length<c.n) sels.push({id:Date.now()+Math.random(),cuota:'',nombre:'',ev:''});
+  while(sels.length>c.n) sels.pop();
   renderSels();
   setTimeout(()=>{
-    document.getElementById('min-k').value=cfg.min_k;
-    document.getElementById('max-k').value=cfg.max_k;
-    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-    btn.classList.add('active'); activeChip=name;
+    document.getElementById('min-k').value=c.mk;
+    document.getElementById('max-k').value=c.xk;
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+    btn.classList.add('on'); activeChip=name;
   },30);
-  document.getElementById('sd-name').textContent=cfg.label;
-  document.getElementById('sd-ap').textContent='📋 '+cfg.apuestas;
-  document.getElementById('sd-txt').textContent=cfg.text;
-  document.getElementById('sd-uso').textContent='⚡ Cuándo usarlo: '+cfg.uso;
+  document.getElementById('sd-name').textContent=c.label;
+  document.getElementById('sd-ap').textContent='📋 '+c.ap;
+  document.getElementById('sd-txt').textContent=c.txt;
+  document.getElementById('sd-uso').textContent='⚡ Cuándo usarlo: '+c.uso;
   document.getElementById('sd').classList.add('on');
 }
 
 // ── EV TOGGLE ─────────────────────────────────────────────────
 function toggleEV(){
-  evEnabled=!evEnabled;
-  document.getElementById('ev-toggle').classList.toggle('on',evEnabled);
-  document.getElementById('tab-ev-btn').style.display=evEnabled?'inline-block':'none';
+  evOn=!evOn;
+  document.getElementById('ev-tog').classList.toggle('on',evOn);
+  document.getElementById('tb-ev').style.display=evOn?'inline-block':'none';
 }
 
 // ── MATEMÁTICA ────────────────────────────────────────────────
@@ -905,61 +741,60 @@ function combos(arr,k){
   const [h,...t]=arr;
   return [...combos(t,k-1).map(c=>[h,...c]),...combos(t,k)];
 }
-function genParlays(n,minK,maxK){
+function genParlays(n,mk,xk){
   const idx=Array.from({length:n},(_,i)=>i),all=[];
-  for(let k=minK;k<=maxK;k++) combos(idx,k).forEach(c=>all.push({indices:c,k}));
+  for(let k=mk;k<=xk;k++) combos(idx,k).forEach(c=>all.push({indices:c,k}));
   return all;
 }
-function pOdds(combo,cuotas){ return combo.reduce((p,i)=>p*cuotas[i],1); }
-function retEsc(parlays,sp,ac,cuotas){
+function pOdds(combo,Q){return combo.reduce((p,i)=>p*Q[i],1);}
+function retEsc(parlays,sp,ac,Q){
   const s=new Set(ac);
-  return parlays.filter(p=>p.indices.every(i=>s.has(i))).reduce((sum,p)=>sum+sp*pOdds(p.indices,cuotas),0);
+  return parlays.filter(p=>p.indices.every(i=>s.has(i))).reduce((t,p)=>t+sp*pOdds(p.indices,Q),0);
 }
-function minAciertos(parlays,sp,stake,n,cuotas){
+function minAc(parlays,sp,stake,n,Q){
   const idx=Array.from({length:n},(_,i)=>i);
   for(let na=1;na<=n;na++){
-    if(Math.max(...combos(idx,na).map(c=>retEsc(parlays,sp,c,cuotas)))>=stake) return na;
+    if(Math.max(...combos(idx,na).map(c=>retEsc(parlays,sp,c,Q)))>=stake) return na;
   }
   return n+1;
 }
 
 // ── CALCULAR ──────────────────────────────────────────────────
 function calcular(){
-  const cuotas=sels.map(s=>parseFloat(s.cuota));
-  const nombres=sels.map((s,i)=>s.nombre||`Sel. ${i+1}`);
-  const evs=sels.map(s=>parseFloat(s.ev));
+  const Q=sels.map(s=>parseFloat(s.cuota));
+  const N=sels.map((s,i)=>s.nombre||`Sel. ${i+1}`);
+  const EV=sels.map(s=>parseFloat(s.ev));
 
   if(sels.length<2){alert('Añade al menos 2 selecciones.');return;}
-  if(cuotas.some(isNaN)||cuotas.some(c=>c<=1)){alert('Todas las cuotas deben ser > 1.0');return;}
+  if(Q.some(isNaN)||Q.some(c=>c<=1)){alert('Todas las cuotas deben ser mayores a 1.0.\nVerifica que no haya celdas vacías o con texto en la columna Cuota.');return;}
+
   const stake=getStake();
   if(!stake||stake<=0){alert('Ingresa un monto válido.');return;}
-  const minK=parseInt(document.getElementById('min-k').value);
-  const maxK=parseInt(document.getElementById('max-k').value);
-  if(minK>maxK){alert('k mínimo no puede ser mayor que k máximo');return;}
+  const mk=parseInt(document.getElementById('min-k').value);
+  const xk=parseInt(document.getElementById('max-k').value);
+  if(mk>xk){alert('k mínimo no puede ser mayor que k máximo.');return;}
 
   const n=sels.length;
-  const parlays=genParlays(n,minK,maxK);
+  const parlays=genParlays(n,mk,xk);
   const sp=stake/parlays.length;
   const allIdx=Array.from({length:n},(_,i)=>i);
-  const maxRet=retEsc(parlays,sp,allIdx,cuotas);
+  const maxRet=retEsc(parlays,sp,allIdx,Q);
   const maxROI=(maxRet-stake)/stake*100;
-  const ma=minAciertos(parlays,sp,stake,n,cuotas);
+  const ma=minAc(parlays,sp,stake,n,Q);
 
-  document.getElementById('placeholder').style.display='none';
-  document.getElementById('results').style.display='flex';
-  document.getElementById('results').style.flexDirection='column';
-  document.getElementById('results').style.gap='16px';
+  document.getElementById('ph').style.display='none';
+  const res=document.getElementById('results');
+  res.style.display='flex';
 
   renderMetrics(parlays,sp,stake,maxRet,maxROI,ma,n);
-  renderRecs(cuotas,parlays,sp,stake,maxROI,ma,n,nombres);
-  renderEscenarios(cuotas,parlays,sp,stake,n);
-  renderParlays(parlays,sp,nombres,cuotas);
-  renderComparativa(cuotas,stake,n);
-  if(evEnabled) renderEV(cuotas,nombres,evs,sp);
+  renderRecs(Q,parlays,sp,stake,maxROI,ma,n,N);
+  renderEsc(Q,parlays,sp,stake,n);
+  renderPar(parlays,sp,N,Q);
+  renderCmp(Q,stake,n);
+  if(evOn) renderEV(Q,N,EV,sp);
 
-  // Scroll to results on mobile
-  if(window.innerWidth<=900){
-    document.getElementById('results').scrollIntoView({behavior:'smooth'});
+  if(window.innerWidth<=960){
+    document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
   }
 }
 
@@ -968,139 +803,196 @@ function renderMetrics(parlays,sp,stake,maxRet,maxROI,ma,n){
   const rc=ma<=Math.ceil(n/2)?'g':ma<n?'a':'r';
   const f=v=>'$'+Math.round(v).toLocaleString('es-CL');
   document.getElementById('metrics').innerHTML=`
-    <div class="metric"><div class="metric-label">Parlays totales</div><div class="metric-value">${parlays.length}</div><div class="metric-sub">${f(Math.round(sp))} c/u</div></div>
-    <div class="metric"><div class="metric-label">Retorno máximo</div><div class="metric-value g">${f(maxRet)}</div><div class="metric-sub">todos aciertan</div></div>
-    <div class="metric"><div class="metric-label">ROI máximo</div><div class="metric-value g">+${maxROI.toFixed(1)}%</div><div class="metric-sub">si aciertas todo</div></div>
-    <div class="metric"><div class="metric-label">Stake total</div><div class="metric-value">${f(stake)}</div><div class="metric-sub">invertido</div></div>
-    <div class="metric"><div class="metric-label">Mín. aciertos</div><div class="metric-value ${rc}">${ma}/${n}</div><div class="metric-sub">para no perder</div></div>
-    <div class="metric"><div class="metric-label">Pérdida máxima</div><div class="metric-value r">−${f(stake)}</div><div class="metric-sub">0 aciertos</div></div>`;
+    <div class="metric"><div class="m-lbl">Parlays totales</div><div class="m-val">${parlays.length}</div><div class="m-sub">${f(Math.round(sp))} c/u</div></div>
+    <div class="metric"><div class="m-lbl">Retorno máximo</div><div class="m-val g">${f(maxRet)}</div><div class="m-sub">si aciertas todo</div></div>
+    <div class="metric"><div class="m-lbl">ROI máximo</div><div class="m-val g">+${maxROI.toFixed(1)}%</div><div class="m-sub">ganancia neta</div></div>
+    <div class="metric"><div class="m-lbl">Stake total</div><div class="m-val">${f(stake)}</div><div class="m-sub">invertido</div></div>
+    <div class="metric"><div class="m-lbl">Mín. aciertos</div><div class="m-val ${rc}">${ma}/${n}</div><div class="m-sub">para no perder</div></div>
+    <div class="metric"><div class="m-lbl">Pérdida máxima</div><div class="m-val r">−${f(stake)}</div><div class="m-sub">0 aciertos</div></div>`;
 }
 
 // ── RECOMENDACIONES ───────────────────────────────────────────
-function renderRecs(cuotas,parlays,sp,stake,maxROI,ma,n,nombres){
+function renderRecs(Q,parlays,sp,stake,maxROI,ma,n,N){
   const recs=[];
-  const avg=cuotas.reduce((a,b)=>a+b,0)/n;
-  const minO=Math.min(...cuotas), maxO=Math.max(...cuotas);
-  const idxMin=cuotas.indexOf(minO);
+  const avg=Q.reduce((a,b)=>a+b,0)/n;
+  const minO=Math.min(...Q), maxO=Math.max(...Q);
   const ratio=ma/n;
 
   if(avg<1.65)
-    recs.push({t:'warning',i:'⚠️',ti:'Cuotas muy bajas en promedio',tx:`Promedio ${avg.toFixed(2)}. Con cuotas tan bajas necesitas una tasa de acierto muy alta para ser rentable a largo plazo. Apunta a selecciones con cuota mínima de 1.70.`});
+    recs.push({t:'warning',i:'⚠️',ti:'Cuotas muy bajas en promedio',
+      tx:`Promedio ${avg.toFixed(2)}. Necesitas tasa de acierto muy alta para ser rentable a largo plazo. Apunta a cuotas mínimas de 1.70.`});
   else if(avg<=2.30)
-    recs.push({t:'positive',i:'✅',ti:'Perfil de cuotas óptimo',tx:`Promedio ${avg.toFixed(2)}: el rango ideal para sistemas. Las cuotas entre 1.65 y 2.30 corresponden a favoritos donde el análisis táctico puede darte ventaja real sobre la línea de la casa.`});
+    recs.push({t:'positive',i:'✅',ti:'Perfil de cuotas óptimo',
+      tx:`Promedio ${avg.toFixed(2)}: el rango ideal para sistemas. Las cuotas 1.65–2.30 corresponden a favoritos donde el análisis táctico puede darte ventaja real.`});
   else
-    recs.push({t:'warning',i:'⚠️',ti:'Cuotas altas — verifica el fundamento de cada selección',tx:`Promedio ${avg.toFixed(2)}. La probabilidad implícita de cada selección es baja. El potencial de retorno es alto pero una selección débil puede destruir el sistema.`});
+    recs.push({t:'warning',i:'⚠️',ti:'Cuotas altas — verifica cada selección',
+      tx:`Promedio ${avg.toFixed(2)}. Probabilidades implícitas bajas. El potencial de retorno es alto pero una selección débil puede destruir el sistema.`});
 
   if(ratio<=0.5)
-    recs.push({t:'positive',i:'🛡️',ti:`Solo necesitas ${ma}/${n} aciertos para no perder`,tx:`Acertar el ${Math.round(ratio*100)}% de tus selecciones (mejor conjunto posible) ya devuelve el stake. Excelente protección. Analistas con buen proceso logran 55–65% de acierto en fútbol europeo.`});
+    recs.push({t:'positive',i:'🛡️',ti:`Solo necesitas ${ma}/${n} aciertos para no perder`,
+      tx:`Acertar el ${Math.round(ratio*100)}% (mejor conjunto posible) ya devuelve el stake. Excelente protección. Analistas con buen proceso logran 55–65% en fútbol europeo.`});
   else if(ratio<=0.75)
-    recs.push({t:'warning',i:'📊',ti:`Necesitas ${ma}/${n} aciertos — umbral exigente`,tx:`Alcanzable con análisis disciplinado. La clave: no incluir selecciones por "completar" el sistema. Cada una debe estar respaldada por datos reales.`});
+    recs.push({t:'warning',i:'📊',ti:`Umbral exigente: ${ma}/${n} aciertos`,
+      tx:`Alcanzable con análisis disciplinado. No incluir selecciones por "completar" el sistema. Cada una debe estar respaldada por datos reales.`});
   else
-    recs.push({t:'danger',i:'🚨',ti:`Sistema de alto riesgo — requiere ${ma}/${n} aciertos`,tx:`El perfil se acerca a un parley clásico en términos de riesgo. Considera reducir el k máximo o elegir cuotas más bajas.`});
+    recs.push({t:'danger',i:'🚨',ti:`Sistema de alto riesgo — requiere ${ma}/${n} aciertos`,
+      tx:`El perfil se acerca a un parley clásico. Considera reducir el k máximo o elegir cuotas más bajas.`});
 
   if(maxO-minO>1.5)
-    recs.push({t:'info',i:'📐',ti:'Alta dispersión de cuotas — aprovecha la estructura',tx:`Cuotas de ${minO.toFixed(2)} a ${maxO.toFixed(2)}. Los parlays con la cuota baja son tu red de seguridad. Los que incluyen la cuota alta son los que pueden disparar el retorno. Verifica que la selección más alta esté bien fundamentada.`});
+    recs.push({t:'info',i:'📐',ti:'Alta dispersión — aprovecha la estructura',
+      tx:`Cuotas de ${minO.toFixed(2)} a ${maxO.toFixed(2)}. Los parlays con la cuota baja son tu red de seguridad. Los que incluyen la cuota alta pueden disparar el retorno. Verifica que la selección más alta esté bien fundamentada.`});
 
   const pct=sp/stake*100;
   if(pct<3)
-    recs.push({t:'warning',i:'💰',ti:'Stake muy bajo por parlay',tx:`Cada parlay recibe solo ${pct.toFixed(1)}% del stake ($${Math.round(sp).toLocaleString('es-CL')} CLP). Considera un k más alto o aumentar el monto total.`});
+    recs.push({t:'warning',i:'💰',ti:'Stake muy bajo por parlay',
+      tx:`Cada parlay recibe ${pct.toFixed(1)}% del stake ($${Math.round(sp).toLocaleString('es-CL')} CLP). Considera un k más alto o aumentar el monto total.`});
 
   if(minO<1.50)
-    recs.push({t:'danger',i:'🔍',ti:`Revisa la cuota ${minO.toFixed(2)} (${nombres[idxMin]})`,tx:`La casa le asigna ${(1/minO*100).toFixed(1)}% de probabilidad implícita. Para tener valor real necesitas creer que ocurre con mayor probabilidad. Activa el análisis EV para verificarlo.`});
+    recs.push({t:'danger',i:'🔍',ti:`Revisa la cuota ${minO.toFixed(2)} (${N[Q.indexOf(minO)]})`,
+      tx:`La casa le asigna ${(1/minO*100).toFixed(1)}% de probabilidad implícita. Para tener valor real necesitas creer que ocurre con mayor probabilidad. Activa EV para verificarlo.`});
 
-  recs.push({t:'info',i:'🏦',ti:'Regla de bankroll: máximo 2–5% por sesión',tx:`Tu stake actual es $${Math.round(stake).toLocaleString('es-CL')} CLP. Bankroll recomendado: $${Math.round(stake*20).toLocaleString('es-CL')}–$${Math.round(stake*50).toLocaleString('es-CL')} CLP. Esto protege la operación ante rachas negativas.`});
+  recs.push({t:'info',i:'🏦',ti:'Regla de bankroll: máximo 2–5% por sesión',
+    tx:`Stake actual $${Math.round(stake).toLocaleString('es-CL')} CLP → bankroll recomendado: $${Math.round(stake*20).toLocaleString('es-CL')}–$${Math.round(stake*50).toLocaleString('es-CL')} CLP.`});
 
   if(maxROI>600)
-    recs.push({t:'info',i:'🏆',ti:`ROI potencial +${maxROI.toFixed(0)}% — foco en escenarios intermedios`,tx:`El retorno "todos aciertan" es alto, pero estadísticamente raro. En la práctica, apunta a las filas N-1 y N-2 aciertos de la tabla de escenarios como objetivo realista.`});
+    recs.push({t:'info',i:'🏆',ti:`ROI potencial +${maxROI.toFixed(0)}% — foco en escenarios intermedios`,
+      tx:`El retorno "todos aciertan" es alto, pero estadísticamente raro. Apunta a las filas N-1 y N-2 de la tabla de escenarios como objetivo realista.`});
 
   const tips={
-    trixie:  {t:'positive',i:'📌',ti:'Trixie: ordena por confianza, no por cuota',tx:'Identifica tus 2 selecciones más sólidas. El doble de esas dos es el que más frecuentemente cobrarás. El treble es el bono, no la base del plan.'},
-    patent:  {t:'info',    i:'📌',ti:'Patent: el single de alta cuota es la clave',tx:'El Patent justifica sus 7 apuestas cuando al menos una cuota supera 2.80. Ese single puede devolver el 30–40% del stake por sí solo.'},
-    yankee:  {t:'positive',i:'📌',ti:'Yankee: el estándar de los analíticos',tx:'Apostadores con tasa de acierto >52% generan ROI positivo consistente con el Yankee usando cuotas 1.80–2.50. La clave es la consistencia en la calidad de selecciones.'},
-    lucky15: {t:'info',    i:'📌',ti:'Lucky 15: define tu "comodín" antes de apostar',tx:'El Lucky 15 brilla cuando incluyes un comodín de cuota 4.00+. Si solo ese acierta, el single lo rescata. Si además aciertas 2–3 más, el retorno combinado puede ser considerable.'},
-    lucky31: {t:'warning', i:'📌',ti:'Lucky 31: calidad sobre cantidad',tx:'Con 31 apuestas el stake se fragmenta. Asegúrate de que los retornos de dobles y trebles sean atractivos. Evalúa si un Yankee con las 4 mejores selecciones es más eficiente.'},
-    lucky63: {t:'warning', i:'📌',ti:'Lucky 63: solo para análisis muy sólidos',tx:'63 apuestas exigen investigación profunda de cada partido. La rentabilidad cae rápido si incluyes selecciones débiles. Solo úsalo con tasa de acierto histórica >55%.'},
-    heinz:   {t:'info',    i:'📌',ti:'Heinz: balance del experto en 6 selecciones',tx:'Sin singles, el Heinz es preferible cuando las 6 cuotas son similares y ninguna es un comodín de cuota muy alta. Si hay una cuota 5.00+, el Lucky 63 puede ser más inteligente.'},
+    trixie:{t:'positive',i:'📌',ti:'Trixie: ordena por confianza, no por cuota',tx:'Identifica tus 2 selecciones más sólidas. El doble de esas dos es el que más frecuentemente cobrarás. El treble es el bono, no la base del plan.'},
+    patent:{t:'info',i:'📌',ti:'Patent: el single de alta cuota es la clave',tx:'El Patent justifica sus 7 apuestas cuando al menos una cuota supera 2.80. Ese single puede devolver el 30–40% del stake por sí solo.'},
+    yankee:{t:'positive',i:'📌',ti:'Yankee: el estándar de los analíticos',tx:'Apostadores con tasa de acierto >52% generan ROI positivo consistente con el Yankee usando cuotas 1.80–2.50. La clave es la consistencia.'},
+    lucky15:{t:'info',i:'📌',ti:'Lucky 15: define tu "comodín" antes de apostar',tx:'El Lucky 15 brilla con un comodín de cuota 4.00+. Si solo ese acierta, el single lo rescata. Si además aciertas 2–3 más, el retorno es considerable.'},
+    lucky31:{t:'warning',i:'📌',ti:'Lucky 31: calidad sobre cantidad',tx:'Con 31 apuestas el stake se fragmenta. Asegúrate de que los retornos de dobles y trebles sean atractivos. Evalúa si un Yankee con las 4 mejores es más eficiente.'},
+    lucky63:{t:'warning',i:'📌',ti:'Lucky 63: solo para análisis muy sólidos',tx:'63 apuestas exigen investigación profunda. La rentabilidad cae rápido con selecciones débiles. Solo úsalo con tasa de acierto histórica >55%.'},
+    heinz:{t:'info',i:'📌',ti:'Heinz: balance del experto',tx:'Sin singles, el Heinz es preferible cuando las 6 cuotas son similares. Si hay una cuota 5.00+, el Lucky 63 puede ser más inteligente.'},
   };
-  if(activeChip && tips[activeChip]) recs.push(tips[activeChip]);
+  if(activeChip&&tips[activeChip]) recs.push(tips[activeChip]);
 
-  document.getElementById('rec-count').textContent=recs.length+' observaciones';
-  document.getElementById('rec-list').innerHTML=recs.map(r=>`
-    <div class="rec-item ${r.t}">
-      <span class="rec-icon">${r.i}</span>
-      <div><div class="rec-title">${r.ti}</div><div class="rec-text">${r.tx}</div></div>
+  document.getElementById('rec-n').textContent=recs.length+' obs.';
+  document.getElementById('recs').innerHTML=recs.map(r=>`
+    <div class="rec ${r.t}">
+      <span class="rec-ico">${r.i}</span>
+      <div><div class="rec-ti">${r.ti}</div><div class="rec-tx">${r.tx}</div></div>
     </div>`).join('');
 }
 
-// ── TAG HELPERS ────────────────────────────────────────────────
-function tM(v,s){ return `<span class="tag ${v>=s?'tg':v>0?'ta':'tr'}">$${Math.round(v).toLocaleString('es-CL')}</span>`; }
-function tR(v){ return `<span class="tag ${v>=0?'tg':'tr'}">${v>=0?'+':''}${v.toFixed(1)}%</span>`; }
+// ── TAG HELPERS ───────────────────────────────────────────────
+function tM(v,s){return `<span class="tag ${v>=s?'tg':v>0?'ta':'tr'}">$${Math.round(v).toLocaleString('es-CL')}</span>`;}
+function tR(v){return `<span class="tag ${v>=0?'tg':'tr'}">${v>=0?'+':''}${v.toFixed(1)}%</span>`;}
 
 // ── ESCENARIOS ────────────────────────────────────────────────
-function renderEscenarios(cuotas,parlays,sp,stake,n){
+function renderEsc(Q,parlays,sp,stake,n){
   const idx=Array.from({length:n},(_,i)=>i); let rows='';
   for(let na=0;na<=n;na++){
     const cs=combos(idx,na);
-    const rets=cs.map(c=>retEsc(parlays,sp,c,cuotas));
+    const rets=cs.map(c=>retEsc(parlays,sp,c,Q));
     const mejor=rets.length?Math.max(...rets):0;
     const peor =rets.length?Math.min(...rets):0;
     const prom =rets.length?rets.reduce((a,b)=>a+b,0)/rets.length:0;
-    rows+=`<tr><td><strong>${na}/${n}</strong></td><td style="color:var(--muted)">${cs.length}</td><td>${tM(mejor,stake)}</td><td>${tR((mejor-stake)/stake*100)}</td><td>${tM(peor,stake)}</td><td>${tR((peor-stake)/stake*100)}</td><td>${tM(prom,stake)}</td></tr>`;
+    rows+=`<tr>
+      <td><strong>${na}/${n}</strong></td>
+      <td style="color:var(--muted)">${cs.length}</td>
+      <td>${tM(mejor,stake)}</td><td>${tR((mejor-stake)/stake*100)}</td>
+      <td>${tM(peor,stake)}</td><td>${tR((peor-stake)/stake*100)}</td>
+      <td>${tM(prom,stake)}</td>
+    </tr>`;
   }
-  document.getElementById('tab-esc').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Aciertos</th><th>Combos</th><th>Mejor retorno</th><th>ROI mejor</th><th>Peor retorno</th><th>ROI peor</th><th>Promedio</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Verde ≥ stake invertido · Naranja = retorno parcial · Rojo = pérdida total</p>`;
+  document.getElementById('tp-esc').innerHTML=`
+    <div class="tw"><table>
+      <thead><tr><th>Aciertos</th><th>Combos</th><th>Mejor retorno</th><th>ROI mejor</th><th>Peor retorno</th><th>ROI peor</th><th>Promedio</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <p class="note">Verde ≥ stake · Naranja = retorno parcial · Rojo = pérdida total. Stake total: $${Math.round(stake).toLocaleString('es-CL')} CLP.</p>`;
 }
 
 // ── PARLAYS ───────────────────────────────────────────────────
-function renderParlays(parlays,sp,nombres,cuotas){
+function renderPar(parlays,sp,N,Q){
   const max=60; let rows='';
   parlays.slice(0,max).forEach((p,i)=>{
-    const label=p.indices.map(j=>nombres[j]).join(' × ');
-    const odds=pOdds(p.indices,cuotas), r=sp*odds;
-    rows+=`<tr><td style="color:var(--muted)">${i+1}</td><td class="td-name" title="${label}">${label}</td><td style="color:var(--muted)">${p.k}</td><td>${odds.toFixed(3)}</td><td>$${Math.round(sp).toLocaleString('es-CL')}</td><td><span class="tag tg">$${Math.round(r).toLocaleString('es-CL')}</span></td><td><span class="tag ta">$${Math.round(r-sp).toLocaleString('es-CL')}</span></td></tr>`;
+    const lbl=p.indices.map(j=>N[j]).join(' × ');
+    const odds=pOdds(p.indices,Q), r=sp*odds;
+    rows+=`<tr>
+      <td style="color:var(--muted)">${i+1}</td>
+      <td class="tdn" title="${lbl}">${lbl}</td>
+      <td style="color:var(--muted)">${p.k}</td>
+      <td>${odds.toFixed(3)}</td>
+      <td>$${Math.round(sp).toLocaleString('es-CL')}</td>
+      <td><span class="tag tg">$${Math.round(r).toLocaleString('es-CL')}</span></td>
+      <td><span class="tag ta">$${Math.round(r-sp).toLocaleString('es-CL')}</span></td>
+    </tr>`;
   });
   const extra=parlays.length>max?`<p class="note">Mostrando ${max} de ${parlays.length} parlays.</p>`:'';
-  document.getElementById('tab-par').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>#</th><th>Selecciones</th><th>k</th><th>Cuota comb.</th><th>Stake</th><th>Retorno</th><th>Ganancia</th></tr></thead><tbody>${rows}</tbody></table></div>${extra}`;
+  document.getElementById('tp-par').innerHTML=`
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>Selecciones</th><th>k</th><th>Cuota comb.</th><th>Stake</th><th>Retorno</th><th>Ganancia</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>${extra}`;
 }
 
 // ── COMPARATIVA ───────────────────────────────────────────────
-function renderComparativa(cuotas,stake,n){
+function renderCmp(Q,stake,n){
   const idx=Array.from({length:n},(_,i)=>i); let rows='';
-  for(let minK=1;minK<=n;minK++){
-    for(let maxK=minK;maxK<=n;maxK++){
-      const ps=genParlays(n,minK,maxK);
+  for(let mk=1;mk<=n;mk++){
+    for(let xk=mk;xk<=n;xk++){
+      const ps=genParlays(n,mk,xk);
       if(ps.length>250) continue;
       const sp2=stake/ps.length;
-      const mr=retEsc(ps,sp2,idx,cuotas);
-      const roi=(mr-stake)/stake*100;
+      const mr=retEsc(ps,sp2,idx,Q), roi=(mr-stake)/stake*100;
       let ma2=n+1;
       for(let na=1;na<=n;na++){
-        if(Math.max(...combos(idx,na).map(c=>retEsc(ps,sp2,c,cuotas)))>=stake){ma2=na;break;}
+        if(Math.max(...combos(idx,na).map(c=>retEsc(ps,sp2,c,Q)))>=stake){ma2=na;break;}
       }
       const [rt,rc]=ma2<=Math.ceil(n/2)?['BAJO','tg']:ma2<n?['MEDIO','ta']:['ALTO','tr'];
-      rows+=`<tr><td><strong>${minK===maxK?minK+'/'+n:minK+'–'+maxK+'/'+n}</strong></td><td>${ps.length}</td><td>$${Math.round(sp2).toLocaleString('es-CL')}</td><td><span class="tag tg">$${Math.round(mr).toLocaleString('es-CL')}</span></td><td>${tR(roi)}</td><td>${ma2}/${n}</td><td><span class="tag ${rc}">${rt}</span></td></tr>`;
+      const lbl=mk===xk?`${mk}/${n}`:`${mk}–${xk}/${n}`;
+      rows+=`<tr>
+        <td><strong>${lbl}</strong></td><td>${ps.length}</td>
+        <td>$${Math.round(sp2).toLocaleString('es-CL')}</td>
+        <td><span class="tag tg">$${Math.round(mr).toLocaleString('es-CL')}</span></td>
+        <td>${tR(roi)}</td><td>${ma2}/${n}</td>
+        <td><span class="tag ${rc}">${rt}</span></td>
+      </tr>`;
     }
   }
-  document.getElementById('tab-comp').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Sistema</th><th>Parlays</th><th>Stake/parlay</th><th>Retorno máx.</th><th>ROI máx.</th><th>Mín. aciertos</th><th>Riesgo</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Sistemas con más de 250 parlays no se muestran.</p>`;
+  document.getElementById('tp-cmp').innerHTML=`
+    <div class="tw"><table>
+      <thead><tr><th>Sistema</th><th>Parlays</th><th>Stake/parlay</th><th>Retorno máx.</th><th>ROI máx.</th><th>Mín. aciertos</th><th>Riesgo</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <p class="note">Sistemas con más de 250 parlays no se muestran.</p>`;
 }
 
 // ── EV ────────────────────────────────────────────────────────
-function renderEV(cuotas,nombres,evs,sp){
+function renderEV(Q,N,EV,sp){
   let rows='';
-  cuotas.forEach((c,i)=>{
-    const pct=evs[i];
-    if(isNaN(pct)||pct<=0||pct>=100){rows+=`<tr><td class="td-name">${nombres[i]}</td><td>${c.toFixed(2)}</td><td colspan="4" style="color:var(--dim)">— sin prob. estimada</td></tr>`;return;}
-    const p=pct/100,pI=1/c*100,edge=pct-pI,ev=sp*(c*p-1);
-    rows+=`<tr><td class="td-name">${nombres[i]}</td><td>${c.toFixed(2)}</td><td style="color:var(--muted)">${pI.toFixed(1)}%</td><td>${pct.toFixed(1)}%</td><td>${edge>0?`<span class="tag tg">+${edge.toFixed(1)}%</span>`:`<span class="tag tr">${edge.toFixed(1)}%</span>`}</td><td>${ev>=0?`<span class="tag tg">$${Math.round(ev).toLocaleString('es-CL')}</span>`:`<span class="tag tr">−$${Math.round(Math.abs(ev)).toLocaleString('es-CL')}</span>`}</td></tr>`;
+  Q.forEach((c,i)=>{
+    const pct=EV[i];
+    if(isNaN(pct)||pct<=0||pct>=100){
+      rows+=`<tr><td class="tdn">${N[i]}</td><td>${c.toFixed(2)}</td><td colspan="4" style="color:var(--dim)">— sin prob. estimada</td></tr>`;return;
+    }
+    const p=pct/100, pI=1/c*100, edge=pct-pI, ev=sp*(c*p-1);
+    rows+=`<tr>
+      <td class="tdn">${N[i]}</td><td>${c.toFixed(2)}</td>
+      <td style="color:var(--muted)">${pI.toFixed(1)}%</td>
+      <td>${pct.toFixed(1)}%</td>
+      <td>${edge>0?`<span class="tag tg">+${edge.toFixed(1)}%</span>`:`<span class="tag tr">${edge.toFixed(1)}%</span>`}</td>
+      <td>${ev>=0?`<span class="tag tg">$${Math.round(ev).toLocaleString('es-CL')}</span>`:`<span class="tag tr">−$${Math.round(Math.abs(ev)).toLocaleString('es-CL')}</span>`}</td>
+    </tr>`;
   });
-  document.getElementById('tab-ev').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Selección</th><th>Cuota</th><th>P. implícita</th><th>P. estimada</th><th>Edge</th><th>EV / parlay</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Edge = tu prob. estimada − prob. implícita de la casa.</p>`;
+  document.getElementById('tp-ev').innerHTML=`
+    <div class="tw"><table>
+      <thead><tr><th>Selección</th><th>Cuota</th><th>P. implícita</th><th>P. estimada</th><th>Edge</th><th>EV / parlay</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <p class="note">Edge = tu prob. estimada − prob. implícita de la casa. EV positivo = valor esperado favorable.</p>`;
 }
 
 // ── TABS ──────────────────────────────────────────────────────
-function showTab(name,btn){
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  btn.classList.add('active');
+function showTab(id,btn){
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tp-'+id).classList.add('on');
+  btn.classList.add('on');
 }
 </script>
 </body>
