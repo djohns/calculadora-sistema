@@ -23,401 +23,140 @@
     --amber: #f5a623;
     --amber-bg: rgba(245,166,35,.08);
     --blue: #4d9fff;
+    --blue-bg: rgba(77,159,255,.08);
     --accent: #00c97a;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
 
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.6;
-  }
+  header { border-bottom: 1px solid var(--border); padding: 1.1rem 2rem; display: flex; align-items: center; gap: 1rem; position: sticky; top: 0; background: rgba(13,15,18,.94); backdrop-filter: blur(8px); z-index: 100; }
+  .logo { width: 30px; height: 30px; background: var(--green); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  header h1 { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text); }
+  header span { font-size: 11px; color: var(--muted); margin-left: auto; font-family: var(--mono); }
 
-  /* ── Header ── */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 1.25rem 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    position: sticky;
-    top: 0;
-    background: rgba(13,15,18,.92);
-    backdrop-filter: blur(8px);
-    z-index: 100;
-  }
-  .logo {
-    width: 32px; height: 32px;
-    background: var(--green);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-  header h1 {
-    font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text);
-    letter-spacing: -.01em;
-  }
-  header p {
-    font-size: 12px;
-    color: var(--muted);
-    margin-left: auto;
-    font-family: var(--mono);
-  }
+  main { max-width: 1160px; margin: 0 auto; padding: 2rem 1.5rem; display: grid; grid-template-columns: 370px 1fr; gap: 1.5rem; align-items: start; }
+  @media(max-width:820px){ main { grid-template-columns: 1fr; } header span { display:none; } }
 
-  /* ── Layout ── */
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-    display: grid;
-    grid-template-columns: 360px 1fr;
-    gap: 1.5rem;
-    align-items: start;
-  }
-  @media(max-width:800px){
-    main { grid-template-columns: 1fr; }
-    header p { display: none; }
-  }
-
-  /* ── Panel left ── */
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .panel-header {
-    padding: .875rem 1.25rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .panel-title {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-family: var(--mono);
-  }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .panel-header { padding: .8rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .panel-title { font-size: 10px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); }
   .panel-body { padding: 1.25rem; }
 
-  /* ── Selecciones ── */
-  .sel-row {
-    display: grid;
-    grid-template-columns: 18px 1fr 90px 28px;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .sel-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--dim);
-    text-align: center;
-  }
-  input[type="text"], input[type="number"], select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 13px;
-    padding: 0 10px;
-    height: 34px;
-    outline: none;
-    transition: border-color .15s;
-    -moz-appearance: textfield;
-  }
-  input[type="number"] { font-family: var(--mono); }
+  .sel-row { display: grid; grid-template-columns: 18px 1fr 90px 28px; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .sel-num { font-family: var(--mono); font-size: 11px; color: var(--dim); text-align: center; }
+
+  input[type="text"], input[type="number"], select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--sans); font-size: 13px; padding: 0 10px; height: 34px; outline: none; transition: border-color .15s; }
+  input[type="number"] { font-family: var(--mono); -moz-appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
   input:focus, select:focus { border-color: var(--accent); }
   input::placeholder { color: var(--dim); }
-  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-  select { cursor: pointer; }
-  select option { background: var(--surface2); }
+  select { cursor: pointer; } select option { background: var(--surface2); }
 
-  .btn-icon {
-    width: 28px; height: 28px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: transparent;
-    color: var(--dim);
-    cursor: pointer;
-    font-size: 14px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all .15s;
-    flex-shrink: 0;
-  }
+  .btn-icon { width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--dim); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all .15s; flex-shrink: 0; }
   .btn-icon:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
-
-  .btn-add {
-    width: 100%;
-    height: 34px;
-    border: 1px dashed var(--border2);
-    border-radius: 6px;
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 12px;
-    font-family: var(--sans);
-    transition: all .15s;
-    margin-top: 4px;
-  }
+  .btn-add { width: 100%; height: 34px; border: 1px dashed var(--border2); border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; font-size: 12px; font-family: var(--sans); transition: all .15s; margin-top: 4px; }
   .btn-add:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* ── Configuración ── */
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .form-group label {
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 5px;
-    font-family: var(--mono);
-  }
-  .stake-wrap { position: relative; margin-bottom: 12px; }
-  .stake-wrap span {
-    position: absolute;
-    left: 10px; top: 50%; transform: translateY(-50%);
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    pointer-events: none;
-  }
-  .stake-wrap input { padding-left: 38px; }
+  .stake-wrap { position: relative; }
+  .stake-wrap .prefix { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 11px; color: var(--muted); pointer-events: none; z-index: 1; }
+  .stake-wrap input { padding-left: 42px; font-family: var(--mono); }
 
-  /* ── Sistemas rápidos ── */
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 14px;
-  }
-  .chip {
-    padding: 4px 10px;
-    border: 1px solid var(--border2);
-    border-radius: 99px;
-    font-size: 11px;
-    font-family: var(--mono);
-    color: var(--muted);
-    cursor: pointer;
-    transition: all .15s;
-    background: transparent;
-  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 10px; color: var(--muted); margin-bottom: 5px; font-family: var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .chip { padding: 4px 10px; border: 1px solid var(--border2); border-radius: 99px; font-size: 11px; font-family: var(--mono); color: var(--muted); cursor: pointer; transition: all .15s; background: transparent; }
   .chip:hover { border-color: var(--accent); color: var(--accent); }
   .chip.active { border-color: var(--accent); color: var(--bg); background: var(--accent); }
 
-  /* ── EV toggle ── */
-  .ev-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--muted);
-    cursor: pointer;
-    margin-bottom: 10px;
-    user-select: none;
-  }
-  .toggle-switch {
-    width: 34px; height: 18px;
-    background: var(--border2);
-    border-radius: 99px;
-    position: relative;
-    transition: background .2s;
-    flex-shrink: 0;
-  }
-  .toggle-switch::after {
-    content: '';
-    position: absolute;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: var(--muted);
-    top: 3px; left: 3px;
-    transition: all .2s;
-  }
+  .sistema-desc { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: .875rem 1rem; margin-bottom: 12px; display: none; }
+  .sistema-desc.visible { display: block; animation: fadeIn .18s ease; }
+  .sd-name { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 500; margin-bottom: 4px; }
+  .sd-apuestas { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .sd-text { font-size: 12px; color: var(--text); line-height: 1.6; margin-bottom: 8px; }
+  .sd-uso { font-size: 11px; color: var(--amber); background: var(--amber-bg); border-radius: 5px; padding: 6px 8px; line-height: 1.5; }
+
+  .ev-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; user-select: none; }
+  .toggle-switch { width: 34px; height: 18px; background: var(--border2); border-radius: 99px; position: relative; transition: background .2s; flex-shrink: 0; }
+  .toggle-switch::after { content: ''; position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--muted); top: 3px; left: 3px; transition: all .2s; }
   .toggle-switch.on { background: var(--accent); }
   .toggle-switch.on::after { left: 19px; background: var(--bg); }
   #ev-fields { display: none; }
 
-  /* ── Calcular btn ── */
-  .btn-calc {
-    width: 100%;
-    height: 42px;
-    background: var(--accent);
-    color: var(--bg);
-    border: none;
-    border-radius: 8px;
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    letter-spacing: .03em;
-    transition: opacity .15s, transform .1s;
-  }
+  .btn-calc { width: 100%; height: 42px; background: var(--accent); color: var(--bg); border: none; border-radius: 8px; font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; letter-spacing: .03em; transition: opacity .15s, transform .1s; }
   .btn-calc:hover { opacity: .88; }
   .btn-calc:active { transform: scale(.98); }
 
-  /* ── Right panel ── */
   .right { display: flex; flex-direction: column; gap: 1.25rem; }
 
-  /* ── Metrics ── */
-  .metrics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   @media(max-width:600px){ .metrics { grid-template-columns: 1fr 1fr; } }
-  .metric {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: .875rem 1rem;
-  }
-  .metric-label {
-    font-size: 10px;
-    font-family: var(--mono);
-    color: var(--muted);
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .metric-value {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--text);
-  }
+  .metric { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .875rem 1rem; }
+  .metric-label { font-size: 10px; font-family: var(--mono); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+  .metric-value { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--text); }
   .metric-value.g { color: var(--green); }
   .metric-value.r { color: var(--red); }
   .metric-value.a { color: var(--amber); }
-  .metric-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-    font-family: var(--mono);
-  }
+  .metric-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
 
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    padding: 0 1.25rem;
-  }
-  .tab-btn {
-    padding: .75rem 1rem;
-    font-size: 12px;
-    font-family: var(--mono);
-    color: var(--muted);
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    margin-bottom: -1px;
-    transition: color .15s;
-    white-space: nowrap;
-  }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 1.25rem; overflow-x: auto; }
+  .tab-btn { padding: .7rem .9rem; font-size: 11px; font-family: var(--mono); color: var(--muted); background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; margin-bottom: -1px; transition: color .15s; white-space: nowrap; }
   .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
   .tab-btn:hover:not(.active) { color: var(--text); }
   .tab-content { padding: 1.25rem; }
   .tab-pane { display: none; }
   .tab-pane.active { display: block; }
 
-  /* ── Tables ── */
   .tbl-wrap { overflow-x: auto; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  thead th {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .07em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 7px 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-  tbody td {
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--mono);
-    color: var(--text);
-    white-space: nowrap;
-    font-size: 12px;
-  }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th { font-family: var(--mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: 7px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-family: var(--mono); color: var(--text); white-space: nowrap; font-size: 12px; }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
-  .td-name { font-family: var(--sans); font-size: 12px; color: var(--text); max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+  .td-name { font-family: var(--sans); font-size: 12px; color: var(--text); max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
 
-  /* ── Tags ── */
-  .tag {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-  }
+  .tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-family: var(--mono); font-size: 11px; font-weight: 500; }
   .tag-g { background: var(--green-bg); color: var(--green); }
   .tag-r { background: var(--red-bg); color: var(--red); }
   .tag-a { background: var(--amber-bg); color: var(--amber); }
-  .tag-d { background: var(--surface2); color: var(--muted); }
+  .tag-b { background: var(--blue-bg); color: var(--blue); }
 
-  /* ── Empty / placeholder ── */
-  #results-placeholder {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 3rem 2rem;
-    text-align: center;
-  }
-  #results-placeholder .ph-icon {
-    font-size: 36px;
-    margin-bottom: 1rem;
-    opacity: .3;
-  }
-  #results-placeholder p {
-    font-size: 13px;
-    color: var(--muted);
-    font-family: var(--mono);
-  }
+  /* ── Placeholder ── */
+  #results-placeholder { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 3rem 2rem; text-align: center; }
+  #results-placeholder .ph-icon { font-size: 32px; margin-bottom: 1rem; opacity: .25; }
+  #results-placeholder p { font-size: 12px; color: var(--muted); font-family: var(--mono); }
   #results-panel { display: none; }
 
-  /* ── Nota footer ── */
-  .note {
-    font-size: 11px;
-    color: var(--dim);
-    margin-top: 10px;
-    font-family: var(--mono);
-    line-height: 1.5;
-  }
+  /* ── Recomendaciones ── */
+  .rec-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .rec-header { padding: .8rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .rec-header-icon { width: 24px; height: 24px; background: var(--amber-bg); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .rec-title-bar { font-size: 10px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); }
+  .rec-sub { font-size: 11px; color: var(--dim); font-family: var(--mono); margin-left: auto; }
+  .rec-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 10px; }
+  .rec-item { border-radius: 8px; padding: .875rem 1rem; display: flex; gap: 10px; align-items: flex-start; border: 1px solid transparent; }
+  .rec-item.positive { background: var(--green-bg); border-color: rgba(0,201,122,.15); }
+  .rec-item.warning  { background: var(--amber-bg); border-color: rgba(245,166,35,.15); }
+  .rec-item.danger   { background: var(--red-bg);   border-color: rgba(255,79,79,.15); }
+  .rec-item.info     { background: var(--blue-bg);  border-color: rgba(77,159,255,.15); }
+  .rec-icon { font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+  .rec-item-title { font-size: 12px; font-weight: 500; font-family: var(--sans); margin-bottom: 3px; }
+  .rec-item.positive .rec-item-title { color: var(--green); }
+  .rec-item.warning  .rec-item-title { color: var(--amber); }
+  .rec-item.danger   .rec-item-title { color: var(--red); }
+  .rec-item.info     .rec-item-title { color: var(--blue); }
+  .rec-item-text { font-size: 12px; color: var(--text); line-height: 1.58; }
 
-  /* ── Scrollbar ── */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  .note { font-size: 11px; color: var(--dim); margin-top: 10px; font-family: var(--mono); line-height: 1.5; }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
 
-  /* ── Animations ── */
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  .anim { animation: fadeIn .25s ease both; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  .anim { animation: fadeIn .22s ease both; }
 </style>
 </head>
 <body>
@@ -425,519 +164,496 @@
 <header>
   <div class="logo">⚽</div>
   <h1>Sistema / Betcalc</h1>
-  <p>uso personal · v1.0</p>
+  <span>uso personal · v1.1</span>
 </header>
 
 <main>
 
-  <!-- ── LEFT PANEL ── -->
-  <aside>
+<!-- ══ LEFT ══════════════════════════════════════════════════════ -->
+<aside>
 
-    <!-- Selecciones -->
-    <div class="panel" style="margin-bottom:1rem">
-      <div class="panel-header">
-        <span class="panel-title">Selecciones</span>
-        <span id="sel-count" style="font-family:var(--mono);font-size:11px;color:var(--muted)">0 sel.</span>
+  <div class="panel" style="margin-bottom:1rem">
+    <div class="panel-header">
+      <span class="panel-title">Selecciones</span>
+      <span id="sel-count" style="font-family:var(--mono);font-size:11px;color:var(--muted)">0 sel.</span>
+    </div>
+    <div class="panel-body">
+      <div style="display:grid;grid-template-columns:18px 1fr 90px 28px;gap:8px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+        <span></span>
+        <span style="font-size:10px;font-family:var(--mono);color:var(--dim);letter-spacing:.05em;text-transform:uppercase">Nombre (opcional)</span>
+        <span style="font-size:10px;font-family:var(--mono);color:var(--dim);letter-spacing:.05em;text-transform:uppercase">Cuota</span>
+        <span></span>
       </div>
-      <div class="panel-body">
-        <div style="display:grid;grid-template-columns:18px 1fr 90px 28px;gap:8px;margin-bottom:6px;padding:0 0 6px;border-bottom:1px solid var(--border)">
-          <span></span>
-          <span style="font-size:10px;font-family:var(--mono);color:var(--dim);letter-spacing:.06em;text-transform:uppercase">Nombre (opcional)</span>
-          <span style="font-size:10px;font-family:var(--mono);color:var(--dim);letter-spacing:.06em;text-transform:uppercase">Cuota</span>
-          <span></span>
+      <div id="sel-list"></div>
+      <button class="btn-add" onclick="addSel()">+ añadir selección</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Configuración del sistema</span>
+    </div>
+    <div class="panel-body">
+
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Monto total a invertir</label>
+        <div class="stake-wrap">
+          <span class="prefix">CLP$</span>
+          <input type="text" id="stake-display" value="50.000" inputmode="numeric" autocomplete="off"
+            oninput="formatStake(this)" onblur="formatStake(this,true)">
+          <input type="hidden" id="stake-raw" value="50000">
         </div>
-        <div id="sel-list"></div>
-        <button class="btn-add" onclick="addSel()">+ añadir selección</button>
       </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mín. por parlay (k)</label>
+          <select id="min-k"></select>
+        </div>
+        <div class="form-group">
+          <label>Máx. por parlay</label>
+          <select id="max-k"></select>
+        </div>
+      </div>
+
+      <div style="margin-bottom:4px">
+        <div style="font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Sistemas rápidos</div>
+        <div class="chips" id="chips">
+          <button class="chip" data-s="trixie">Trixie</button>
+          <button class="chip" data-s="patent">Patent</button>
+          <button class="chip" data-s="yankee">Yankee</button>
+          <button class="chip" data-s="lucky15">Lucky 15</button>
+          <button class="chip" data-s="lucky31">Lucky 31</button>
+          <button class="chip" data-s="lucky63">Lucky 63</button>
+          <button class="chip" data-s="heinz">Heinz</button>
+        </div>
+        <div class="sistema-desc" id="sistema-desc">
+          <div class="sd-name" id="sd-name"></div>
+          <div class="sd-apuestas" id="sd-apuestas"></div>
+          <div class="sd-text" id="sd-text"></div>
+          <div class="sd-uso" id="sd-uso"></div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px">
+        <label class="ev-toggle" onclick="toggleEV()" style="margin-bottom:10px">
+          <div class="toggle-switch" id="ev-switch"></div>
+          <span>Análisis de valor esperado (EV)</span>
+        </label>
+        <div id="ev-fields">
+          <div style="font-size:11px;color:var(--dim);font-family:var(--mono);margin-bottom:8px">Tus probabilidades estimadas (0–100%)</div>
+          <div id="prob-list"></div>
+        </div>
+      </div>
+
+      <button class="btn-calc" onclick="calcular()">CALCULAR →</button>
+    </div>
+  </div>
+
+</aside>
+
+<!-- ══ RIGHT ═════════════════════════════════════════════════════ -->
+<section class="right">
+
+  <div id="results-placeholder">
+    <div class="ph-icon">📊</div>
+    <p>Ingresa tus selecciones y pulsa calcular.</p>
+  </div>
+
+  <div id="results-panel">
+    <div class="metrics anim" id="metrics-grid"></div>
+
+    <div class="rec-panel anim">
+      <div class="rec-header">
+        <div class="rec-header-icon">💡</div>
+        <span class="rec-title-bar">Análisis del experto</span>
+        <span class="rec-sub" id="rec-sub"></span>
+      </div>
+      <div class="rec-body" id="rec-body"></div>
     </div>
 
-    <!-- Configuración -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">Configuración</span>
+    <div class="panel anim">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('escenarios',this)">Escenarios</button>
+        <button class="tab-btn" onclick="showTab('parlays',this)">Parlays</button>
+        <button class="tab-btn" onclick="showTab('comparativa',this)">Sistemas</button>
+        <button class="tab-btn" id="tab-ev-btn" onclick="showTab('ev',this)" style="display:none">EV</button>
       </div>
-      <div class="panel-body">
-
-        <div class="form-group" style="margin-bottom:12px">
-          <label>Monto total a invertir</label>
-          <div class="stake-wrap">
-            <span>CLP$</span>
-            <input type="number" id="stake" value="50000" min="1000" step="1000" placeholder="50000">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Mín. por parlay (k)</label>
-            <select id="min-k"></select>
-          </div>
-          <div class="form-group">
-            <label>Máx. por parlay</label>
-            <select id="max-k"></select>
-          </div>
-        </div>
-
-        <div style="margin-bottom:12px">
-          <div style="font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Sistemas rápidos</div>
-          <div class="chips" id="chips">
-            <button class="chip" data-s="trixie">Trixie</button>
-            <button class="chip" data-s="patent">Patent</button>
-            <button class="chip" data-s="yankee">Yankee</button>
-            <button class="chip" data-s="lucky15">Lucky 15</button>
-            <button class="chip" data-s="lucky31">Lucky 31</button>
-            <button class="chip" data-s="lucky63">Lucky 63</button>
-            <button class="chip" data-s="heinz">Heinz</button>
-          </div>
-        </div>
-
-        <!-- EV toggle -->
-        <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px">
-          <label class="ev-toggle" onclick="toggleEV()">
-            <div class="toggle-switch" id="ev-switch"></div>
-            <span>Análisis de valor esperado (EV)</span>
-          </label>
-          <div id="ev-fields">
-            <div style="font-size:11px;color:var(--dim);font-family:var(--mono);margin-bottom:8px">Tus probabilidades estimadas (0–100%)</div>
-            <div id="prob-list"></div>
-          </div>
-        </div>
-
-        <button class="btn-calc" onclick="calcular()">CALCULAR →</button>
+      <div class="tab-content">
+        <div id="tab-escenarios" class="tab-pane active"></div>
+        <div id="tab-parlays"    class="tab-pane"></div>
+        <div id="tab-comparativa" class="tab-pane"></div>
+        <div id="tab-ev"         class="tab-pane"></div>
       </div>
     </div>
+  </div>
 
-  </aside>
-
-  <!-- ── RIGHT PANEL ── -->
-  <section class="right">
-
-    <div id="results-placeholder">
-      <div class="ph-icon">📊</div>
-      <p>Ingresa tus selecciones y pulsa calcular.</p>
-    </div>
-
-    <div id="results-panel">
-
-      <!-- Métricas -->
-      <div class="metrics anim" id="metrics-grid"></div>
-
-      <!-- Tablas -->
-      <div class="panel anim">
-        <div class="tabs">
-          <button class="tab-btn active" onclick="showTab('escenarios',this)">Escenarios</button>
-          <button class="tab-btn" onclick="showTab('parlays',this)">Parlays</button>
-          <button class="tab-btn" onclick="showTab('comparativa',this)">Sistemas</button>
-          <button class="tab-btn" id="tab-ev-btn" onclick="showTab('ev',this)" style="display:none">EV</button>
-        </div>
-        <div class="tab-content">
-          <div id="tab-escenarios" class="tab-pane active"></div>
-          <div id="tab-parlays" class="tab-pane"></div>
-          <div id="tab-comparativa" class="tab-pane"></div>
-          <div id="tab-ev" class="tab-pane"></div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
+</section>
 </main>
 
 <script>
-// ─── Datos ────────────────────────────────────────────────────────
+// ══ DATOS ════════════════════════════════════════════════════════
 const NAMED = {
-  trixie:   {n:3, min_k:2, max_k:3, label:'3 sel → 4 apuestas (dobles + treble)'},
-  patent:   {n:3, min_k:1, max_k:3, label:'3 sel → 7 apuestas (singles + dobles + treble)'},
-  yankee:   {n:4, min_k:2, max_k:4, label:'4 sel → 11 apuestas'},
-  lucky15:  {n:4, min_k:1, max_k:4, label:'4 sel → 15 apuestas'},
-  lucky31:  {n:5, min_k:1, max_k:5, label:'5 sel → 31 apuestas'},
-  lucky63:  {n:6, min_k:1, max_k:6, label:'6 sel → 63 apuestas'},
-  heinz:    {n:6, min_k:2, max_k:6, label:'6 sel → 57 apuestas'},
+  trixie: { n:3, min_k:2, max_k:3,
+    label:'Trixie — 3 selecciones · 4 apuestas',
+    apuestas:'3 dobles + 1 treble',
+    text:'El Trixie toma 3 selecciones y genera los 3 posibles dobles más el parlay completo de las 3. Es el sistema más popular para partidos de alta confianza: basta con acertar 2 de 3 para tener retorno. El treble (las 3 juntas) es el gran premio.',
+    uso:'Ideal cuando tienes 3 favoritos claros con cuotas entre 1.60 y 2.20. Perfecto para jornadas de fútbol europeo donde el análisis táctico respalda fuertemente cada selección.' },
+  patent: { n:3, min_k:1, max_k:3,
+    label:'Patent — 3 selecciones · 7 apuestas',
+    apuestas:'3 singles + 3 dobles + 1 treble',
+    text:'El Patent añade los 3 singles al Trixie, cubriendo todas las combinaciones posibles. Ganarás retorno aunque solo aciertes 1 de 3. El coste es mayor (7 apuestas), pero la protección es máxima.',
+    uso:'Úsalo cuando una de tus 3 selecciones tenga cuota alta (sobre 3.00) y quieras que valga la pena aunque sea la única que aciertes. El single de alta cuota puede devolver casi todo el stake por sí solo.' },
+  yankee: { n:4, min_k:2, max_k:4,
+    label:'Yankee — 4 selecciones · 11 apuestas',
+    apuestas:'6 dobles + 4 trebles + 1 cuádruple',
+    text:'El Yankee es el sistema de 4 selecciones sin singles. Genera todas las combinaciones de 2, 3 y 4 selecciones. Para recuperar el stake necesitas al menos 2 aciertos; con 3 ya obtienes ganancias importantes.',
+    uso:'El sistema más usado por apostadores analíticos en fútbol europeo. Óptimo con 4 selecciones de cuota entre 1.80 y 2.50. Es el mejor equilibrio entre cobertura y potencial de retorno.' },
+  lucky15: { n:4, min_k:1, max_k:4,
+    label:'Lucky 15 — 4 selecciones · 15 apuestas',
+    apuestas:'4 singles + 6 dobles + 4 trebles + 1 cuádruple',
+    text:'Es el Yankee más los 4 singles. Con 15 apuestas cubre absolutamente todas las combinaciones posibles de 1 a 4 selecciones. Si solo aciertas 1 de 4, igual obtienes algo de retorno.',
+    uso:'Úsalo cuando al menos una de tus 4 selecciones tenga cuota alta (sobre 3.50). Que acertar solo esa ya justifique parte de la inversión es el principio del Lucky 15.' },
+  lucky31: { n:5, min_k:1, max_k:5,
+    label:'Lucky 31 — 5 selecciones · 31 apuestas',
+    apuestas:'5 singles + 10 dobles + 10 trebles + 5 cuádruples + 1 quíntuple',
+    text:'Cubre todas las 31 combinaciones posibles de 5 selecciones. Es un sistema para apostadores con alta confianza en su proceso pero que igualmente quieren protección ante fallos individuales.',
+    uso:'Recomendado con 5 selecciones de cuota moderada a alta (1.80–3.00). El quíntuple puede entregar un retorno muy alto si todo sale bien. Exige investigación seria de los 5 partidos.' },
+  lucky63: { n:6, min_k:1, max_k:6,
+    label:'Lucky 63 — 6 selecciones · 63 apuestas',
+    apuestas:'6 singles + 15 dobles + 20 trebles + 15 cuádruples + 6 quíntuples + 1 séxtuple',
+    text:'Cubre absolutamente todas las 63 combinaciones posibles de 6 selecciones. Un sistema de cobertura total que garantiza retorno desde 1 acierto. El stake por apuesta es bajo pero el volumen es alto.',
+    uso:'Solo si tienes 6 selecciones bien fundamentadas y un bankroll sólido. Cuotas entre 1.60 y 2.20 permiten mantener el stake por apuesta manejable sin sacrificar retorno potencial.' },
+  heinz: { n:6, min_k:2, max_k:6,
+    label:'Heinz — 6 selecciones · 57 apuestas',
+    apuestas:'15 dobles + 20 trebles + 15 cuádruples + 6 quíntuples + 1 séxtuple',
+    text:'El Heinz (nombre por las 57 variedades de Heinz) es el Lucky 63 sin los 6 singles. 57 apuestas con combinaciones de 2 a 6 selecciones. Necesitas al menos 2 aciertos para tener retorno.',
+    uso:'Úsalo cuando tengas 6 selecciones de cuota moderada-baja y no quieras pagar el coste extra de los singles. Reduce el gasto frente al Lucky 63 y aumenta el stake promedio por combinación.' },
 };
 
 let sels = [];
 let evEnabled = false;
+let activeChip = null;
 
-// ─── Init ─────────────────────────────────────────────────────────
-(function init(){
-  addSel(1.85,'');
-  addSel(2.10,'');
-  addSel(3.40,'');
-  document.getElementById('chips').querySelectorAll('.chip').forEach(c=>{
-    c.addEventListener('click',()=>setSistema(c.dataset.s, c));
+// ══ INIT ═════════════════════════════════════════════════════════
+(function(){
+  addSel(1.85,''); addSel(2.10,''); addSel(3.40,'');
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.addEventListener('click', ()=>setSistema(c.dataset.s, c));
   });
 })();
 
-// ─── Selecciones ──────────────────────────────────────────────────
+// ══ STAKE FORMATEADO ═════════════════════════════════════════════
+function formatStake(el){
+  let raw = el.value.replace(/\D/g,'');
+  if(!raw) raw='0';
+  const num = parseInt(raw,10);
+  document.getElementById('stake-raw').value = num;
+  const formatted = num.toLocaleString('es-CL').replace(/,/g,'.');
+  // Preserve cursor roughly
+  el.value = formatted;
+}
+function getStake(){ return parseFloat(document.getElementById('stake-raw').value)||0; }
+
+// ══ SELECCIONES ══════════════════════════════════════════════════
 function addSel(cuota='', nombre=''){
-  const id = Date.now() + Math.random();
-  sels.push({id, cuota: cuota||'', nombre: nombre||''});
+  sels.push({id:Date.now()+Math.random(), cuota:cuota||'', nombre:nombre||''});
   renderSels();
 }
-
-function removeSel(id){
-  sels = sels.filter(s=>s.id!==id);
-  renderSels();
-}
-
+function removeSel(id){ sels=sels.filter(s=>s.id!==id); renderSels(); }
 function renderSels(){
-  const list = document.getElementById('sel-list');
-  list.innerHTML = '';
+  const list=document.getElementById('sel-list');
+  list.innerHTML='';
   sels.forEach((s,i)=>{
-    const row = document.createElement('div');
-    row.className = 'sel-row';
-    row.innerHTML = `
+    const row=document.createElement('div');
+    row.className='sel-row';
+    row.innerHTML=`
       <span class="sel-num">${i+1}</span>
-      <input type="text" placeholder="ej: Real Madrid G" value="${s.nombre}"
-        oninput="sels[${i}].nombre=this.value;syncProbs()">
-      <input type="number" placeholder="1.85" value="${s.cuota}" step="0.01" min="1.01"
-        oninput="sels[${i}].cuota=this.value">
+      <input type="text" placeholder="ej: Real Madrid G" value="${s.nombre}" oninput="sels[${i}].nombre=this.value;syncProbs()">
+      <input type="number" placeholder="1.85" value="${s.cuota}" step="0.01" min="1.01" oninput="sels[${i}].cuota=this.value">
       <button class="btn-icon" onclick="removeSel(${s.id})">✕</button>
     `;
     list.appendChild(row);
   });
-  document.getElementById('sel-count').textContent = sels.length + ' sel.';
-  updateKSelects();
-  syncProbs();
+  document.getElementById('sel-count').textContent=sels.length+' sel.';
+  updateKSelects(); syncProbs();
 }
-
 function updateKSelects(){
-  const n = sels.length;
-  const mk = document.getElementById('min-k');
-  const xk = document.getElementById('max-k');
-  const curMk = parseInt(mk.value)||2;
-  const curXk = parseInt(xk.value)||n;
-  mk.innerHTML = ''; xk.innerHTML = '';
-  for(let i=1;i<=n;i++){
-    mk.add(new Option(i,i));
-    xk.add(new Option(i,i));
-  }
-  mk.value = Math.min(Math.max(curMk,1), n);
-  xk.value = Math.min(Math.max(curXk,1), n);
-}
-
-// ─── Sistemas rápidos ─────────────────────────────────────────────
-function setSistema(name, btn){
-  const cfg = NAMED[name];
-  if(!cfg) return;
-  const n = cfg.n;
-  while(sels.length < n) sels.push({id:Date.now()+Math.random(), cuota:'', nombre:''});
-  while(sels.length > n) sels.pop();
-  renderSels();
-  setTimeout(()=>{
-    document.getElementById('min-k').value = cfg.min_k;
-    document.getElementById('max-k').value = cfg.max_k;
-    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-  }, 30);
-}
-
-// ─── EV toggle ────────────────────────────────────────────────────
-function toggleEV(){
-  evEnabled = !evEnabled;
-  document.getElementById('ev-switch').classList.toggle('on', evEnabled);
-  document.getElementById('ev-fields').style.display = evEnabled ? 'block' : 'none';
-  document.getElementById('tab-ev-btn').style.display = evEnabled ? 'inline-block' : 'none';
-  syncProbs();
-}
-
-function syncProbs(){
-  if(!evEnabled) return;
-  const list = document.getElementById('prob-list');
-  const existing = list.querySelectorAll('input');
-  const oldVals = Array.from(existing).map(i=>i.value);
-  list.innerHTML = '';
-  sels.forEach((s,i)=>{
-    const wrap = document.createElement('div');
-    wrap.style.cssText='display:grid;grid-template-columns:1fr 80px;gap:8px;margin-bottom:8px;align-items:center';
-    wrap.innerHTML = `
-      <span style="font-family:var(--sans);font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-        ${s.nombre || 'Sel. '+(i+1)}
-      </span>
-      <div style="position:relative">
-        <input type="number" placeholder="50" value="${oldVals[i]||''}" min="1" max="99" step="1"
-          style="padding-right:22px" id="prob-${i}">
-        <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:11px;color:var(--dim);pointer-events:none">%</span>
-      </div>
-    `;
-    list.appendChild(wrap);
+  const n=sels.length;
+  ['min-k','max-k'].forEach((id,ii)=>{
+    const el=document.getElementById(id);
+    const cur=parseInt(el.value)||(ii===0?2:n);
+    el.innerHTML='';
+    for(let i=1;i<=n;i++) el.add(new Option(i,i));
+    el.value=Math.min(Math.max(cur,1),n);
   });
 }
 
-// ─── Matemática ───────────────────────────────────────────────────
-function combos(arr, k){
-  if(k===0) return [[]];
-  if(arr.length < k) return [];
-  const [h,...t] = arr;
-  return [...combos(t,k-1).map(c=>[h,...c]), ...combos(t,k)];
+// ══ SISTEMAS RÁPIDOS ═════════════════════════════════════════════
+function setSistema(name, btn){
+  const cfg=NAMED[name]; if(!cfg) return;
+  while(sels.length<cfg.n) sels.push({id:Date.now()+Math.random(),cuota:'',nombre:''});
+  while(sels.length>cfg.n) sels.pop();
+  renderSels();
+  setTimeout(()=>{
+    document.getElementById('min-k').value=cfg.min_k;
+    document.getElementById('max-k').value=cfg.max_k;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    activeChip=name;
+  },30);
+  // Descripción
+  document.getElementById('sd-name').textContent=cfg.label;
+  document.getElementById('sd-apuestas').textContent='📋 '+cfg.apuestas;
+  document.getElementById('sd-text').textContent=cfg.text;
+  document.getElementById('sd-uso').textContent='⚡ Cuándo usarlo: '+cfg.uso;
+  document.getElementById('sistema-desc').classList.add('visible');
 }
 
-function genParlays(n, minK, maxK){
-  const idx = Array.from({length:n},(_,i)=>i);
-  const all = [];
-  for(let k=minK;k<=maxK;k++){
-    combos(idx,k).forEach(combo=>{
-      all.push({indices:combo, k});
-    });
-  }
+// ══ EV TOGGLE ════════════════════════════════════════════════════
+function toggleEV(){
+  evEnabled=!evEnabled;
+  document.getElementById('ev-switch').classList.toggle('on',evEnabled);
+  document.getElementById('ev-fields').style.display=evEnabled?'block':'none';
+  document.getElementById('tab-ev-btn').style.display=evEnabled?'inline-block':'none';
+  syncProbs();
+}
+function syncProbs(){
+  if(!evEnabled) return;
+  const list=document.getElementById('prob-list');
+  const old=Array.from(list.querySelectorAll('input')).map(i=>i.value);
+  list.innerHTML='';
+  sels.forEach((s,i)=>{
+    const w=document.createElement('div');
+    w.style.cssText='display:grid;grid-template-columns:1fr 80px;gap:8px;margin-bottom:8px;align-items:center';
+    w.innerHTML=`<span style="font-family:var(--sans);font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.nombre||'Sel. '+(i+1)}</span>
+      <div style="position:relative"><input type="number" placeholder="50" value="${old[i]||''}" min="1" max="99" step="1" style="padding-right:22px" id="prob-${i}">
+      <span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:11px;color:var(--dim);pointer-events:none">%</span></div>`;
+    list.appendChild(w);
+  });
+}
+
+// ══ MATEMÁTICA ═══════════════════════════════════════════════════
+function combos(arr,k){
+  if(k===0) return [[]];
+  if(arr.length<k) return [];
+  const [h,...t]=arr;
+  return [...combos(t,k-1).map(c=>[h,...c]),...combos(t,k)];
+}
+function genParlays(n,minK,maxK){
+  const idx=Array.from({length:n},(_,i)=>i), all=[];
+  for(let k=minK;k<=maxK;k++) combos(idx,k).forEach(c=>all.push({indices:c,k}));
   return all;
 }
-
-function parlayOdds(combo, cuotas){
-  return combo.reduce((p,i)=>p*cuotas[i],1);
+function pOdds(combo,cuotas){ return combo.reduce((p,i)=>p*cuotas[i],1); }
+function ret(parlays,sp,ac,cuotas){
+  const s=new Set(ac);
+  return parlays.filter(p=>p.indices.every(i=>s.has(i))).reduce((sum,p)=>sum+sp*pOdds(p.indices,cuotas),0);
 }
-
-function retorno(parlays, stakeP, aciertos, cuotas){
-  const s = new Set(aciertos);
-  return parlays
-    .filter(p=>p.indices.every(i=>s.has(i)))
-    .reduce((sum,p)=>sum + stakeP*parlayOdds(p.indices, cuotas), 0);
-}
-
-function minAciertos(parlays, stakeP, stake, n, cuotas){
-  const idx = Array.from({length:n},(_,i)=>i);
+function minAc(parlays,sp,stake,n,cuotas){
+  const idx=Array.from({length:n},(_,i)=>i);
   for(let na=1;na<=n;na++){
-    const best = Math.max(...combos(idx,na).map(c=>retorno(parlays,stakeP,c,cuotas)));
-    if(best >= stake) return na;
+    if(Math.max(...combos(idx,na).map(c=>ret(parlays,sp,c,cuotas)))>=stake) return na;
   }
   return n+1;
 }
 
-// ─── Calcular ─────────────────────────────────────────────────────
+// ══ CALCULAR ═════════════════════════════════════════════════════
 function calcular(){
-  const cuotas = sels.map(s=>parseFloat(s.cuota));
-  const nombres = sels.map((s,i)=>s.nombre||`Sel. ${i+1}`);
+  const cuotas=sels.map(s=>parseFloat(s.cuota));
+  const nombres=sels.map((s,i)=>s.nombre||`Sel. ${i+1}`);
+  if(sels.length<2){alert('Añade al menos 2 selecciones.');return;}
+  if(cuotas.some(isNaN)||cuotas.some(c=>c<=1)){alert('Todas las cuotas deben ser > 1.0');return;}
+  const stake=getStake();
+  if(!stake||stake<=0){alert('Ingresa un monto válido.');return;}
+  const minK=parseInt(document.getElementById('min-k').value);
+  const maxK=parseInt(document.getElementById('max-k').value);
+  if(minK>maxK){alert('k mínimo no puede ser mayor que k máximo');return;}
 
-  if(sels.length < 2){ alert('Añade al menos 2 selecciones.'); return; }
-  if(cuotas.some(isNaN)||cuotas.some(c=>c<=1.0)){
-    alert('Todas las cuotas deben ser números mayores a 1.0'); return;
-  }
+  const n=sels.length;
+  const parlays=genParlays(n,minK,maxK);
+  const sp=stake/parlays.length;
+  const allIdx=Array.from({length:n},(_,i)=>i);
+  const maxRet=ret(parlays,sp,allIdx,cuotas);
+  const maxROI=(maxRet-stake)/stake*100;
+  const ma=minAc(parlays,sp,stake,n,cuotas);
 
-  const stake = parseFloat(document.getElementById('stake').value);
-  const minK = parseInt(document.getElementById('min-k').value);
-  const maxK = parseInt(document.getElementById('max-k').value);
-  if(minK > maxK){ alert('k mínimo no puede ser mayor que k máximo'); return; }
-  if(isNaN(stake)||stake<=0){ alert('Ingresa un monto válido'); return; }
+  document.getElementById('results-placeholder').style.display='none';
+  document.getElementById('results-panel').style.display='block';
 
-  const n = sels.length;
-  const parlays = genParlays(n, minK, maxK);
-  const stakeP = stake / parlays.length;
-  const allIdx = Array.from({length:n},(_,i)=>i);
-
-  const maxRet = retorno(parlays, stakeP, allIdx, cuotas);
-  const maxGan = maxRet - stake;
-  const maxROI = maxGan/stake*100;
-  const minAc  = minAciertos(parlays, stakeP, stake, n, cuotas);
-
-  document.getElementById('results-placeholder').style.display = 'none';
-  document.getElementById('results-panel').style.display = 'block';
-
-  renderMetrics(parlays, stakeP, stake, maxRet, maxROI, minAc, n);
-  renderEscenarios(cuotas, parlays, stakeP, stake, n);
-  renderParlays(parlays, stakeP, nombres, cuotas);
-  renderComparativa(cuotas, stake, n);
-  if(evEnabled) renderEV(cuotas, nombres, stakeP);
+  renderMetrics(parlays,sp,stake,maxRet,maxROI,ma,n);
+  renderRecomendaciones(cuotas,parlays,sp,stake,maxROI,ma,n,nombres);
+  renderEscenarios(cuotas,parlays,sp,stake,n);
+  renderParlays(parlays,sp,nombres,cuotas);
+  renderComparativa(cuotas,stake,n);
+  if(evEnabled) renderEV(cuotas,nombres,sp);
+  document.getElementById('results-panel').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ─── Métricas ─────────────────────────────────────────────────────
-function renderMetrics(parlays, stakeP, stake, maxRet, maxROI, minAc, n){
-  const rColor = minAc <= Math.ceil(n/2) ? 'g' : minAc < n ? 'a' : 'r';
-  const fmtK = v => '$'+Math.round(v).toLocaleString('es-CL');
-  document.getElementById('metrics-grid').innerHTML = `
-    <div class="metric">
-      <div class="metric-label">Parlays totales</div>
-      <div class="metric-value">${parlays.length}</div>
-      <div class="metric-sub">$${Math.round(stakeP).toLocaleString('es-CL')} c/u</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Retorno máximo</div>
-      <div class="metric-value g">${fmtK(maxRet)}</div>
-      <div class="metric-sub">todos aciertan</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">ROI máximo</div>
-      <div class="metric-value g">+${maxROI.toFixed(1)}%</div>
-      <div class="metric-sub">ganancia neta</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Stake total</div>
-      <div class="metric-value">${fmtK(stake)}</div>
-      <div class="metric-sub">invertido</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Mín. aciertos rentable</div>
-      <div class="metric-value ${rColor}">${minAc}/${n}</div>
-      <div class="metric-sub">${minAc<=n?'mejor caso posible':'nunca'}</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Pérdida máx.</div>
-      <div class="metric-value r">−${fmtK(stake)}</div>
-      <div class="metric-sub">0 aciertos</div>
-    </div>
-  `;
+// ══ MÉTRICAS ═════════════════════════════════════════════════════
+function renderMetrics(parlays,sp,stake,maxRet,maxROI,ma,n){
+  const rc=ma<=Math.ceil(n/2)?'g':ma<n?'a':'r';
+  const f=v=>'$'+Math.round(v).toLocaleString('es-CL');
+  document.getElementById('metrics-grid').innerHTML=`
+    <div class="metric"><div class="metric-label">Parlays totales</div><div class="metric-value">${parlays.length}</div><div class="metric-sub">${f(Math.round(sp))} c/u</div></div>
+    <div class="metric"><div class="metric-label">Retorno máximo</div><div class="metric-value g">${f(maxRet)}</div><div class="metric-sub">todos aciertan</div></div>
+    <div class="metric"><div class="metric-label">ROI máximo</div><div class="metric-value g">+${maxROI.toFixed(1)}%</div><div class="metric-sub">si aciertas todo</div></div>
+    <div class="metric"><div class="metric-label">Stake total</div><div class="metric-value">${f(stake)}</div><div class="metric-sub">invertido</div></div>
+    <div class="metric"><div class="metric-label">Mín. aciertos rentable</div><div class="metric-value ${rc}">${ma}/${n}</div><div class="metric-sub">mejor escenario</div></div>
+    <div class="metric"><div class="metric-label">Pérdida máxima</div><div class="metric-value r">−${f(stake)}</div><div class="metric-sub">0 aciertos</div></div>`;
 }
 
-// ─── Tag helpers ──────────────────────────────────────────────────
-function tagMoney(val, stake){
-  if(val>=stake) return `<span class="tag tag-g">$${Math.round(val).toLocaleString('es-CL')}</span>`;
-  if(val>0)      return `<span class="tag tag-a">$${Math.round(val).toLocaleString('es-CL')}</span>`;
-  return `<span class="tag tag-r">$${Math.round(val).toLocaleString('es-CL')}</span>`;
-}
-function tagROI(val){
-  const sign = val>=0?'+':'';
-  if(val>=0) return `<span class="tag tag-g">${sign}${val.toFixed(1)}%</span>`;
-  return `<span class="tag tag-r">${val.toFixed(1)}%</span>`;
+// ══ RECOMENDACIONES DEL EXPERTO ══════════════════════════════════
+function renderRecomendaciones(cuotas,parlays,sp,stake,maxROI,ma,n,nombres){
+  const recs=[];
+  const avg=cuotas.reduce((a,b)=>a+b,0)/n;
+  const minO=Math.min(...cuotas), maxO=Math.max(...cuotas);
+  const idxMin=cuotas.indexOf(minO);
+  const ratio=ma/n;
+
+  // 1. Perfil de cuotas
+  if(avg<1.65)
+    recs.push({t:'warning',i:'⚠️',ti:'Cuotas demasiado bajas en promedio',
+      tx:`Promedio de ${avg.toFixed(2)}. Con cuotas tan bajas, el margen de la casa se come gran parte del valor. Necesitas una tasa de acierto altísima para ser rentable a largo plazo. Apunta a selecciones con cuota mínima de 1.70.`});
+  else if(avg<=2.30)
+    recs.push({t:'positive',i:'✅',ti:'Perfil de cuotas óptimo para sistemas',
+      tx:`Promedio de ${avg.toFixed(2)}: el rango ideal para apuestas de sistema. Las cuotas entre 1.65 y 2.30 corresponden a favoritos moderados donde el análisis táctico puede darte ventaja real sobre la línea de la casa.`});
+  else
+    recs.push({t:'warning',i:'⚠️',ti:'Cuotas altas — verifica el fundamento de cada selección',
+      tx:`Promedio de ${avg.toFixed(2)}. Cuotas altas implican equipos menos favoritos: la probabilidad implícita de cada selección es baja. El potencial de retorno es alto pero exige fundamentos sólidos. Una selección débil en el grupo puede destruir el sistema.`});
+
+  // 2. Umbral de aciertos
+  if(ratio<=0.5)
+    recs.push({t:'positive',i:'🛡️',ti:`Solo necesitas ${ma} de ${n} aciertos para no perder`,
+      tx:`Acertar el ${Math.round(ratio*100)}% de tus selecciones (mejor conjunto posible) ya devuelve el stake. Excelente protección. Analistas con buen proceso logran 55–65% de acierto en fútbol europeo, lo que hace este sistema rentable en el tiempo con constancia.`});
+  else if(ratio<=0.75)
+    recs.push({t:'warning',i:'📊',ti:`Necesitas ${ma} de ${n} aciertos — exigente pero alcanzable`,
+      tx:`El umbral es el ${Math.round(ratio*100)}% de aciertos en el mejor escenario posible. Alcanzable con análisis disciplinado. La clave: no incluir selecciones por "completar" el sistema. Cada una debe estar respaldada por análisis real.`});
+  else
+    recs.push({t:'danger',i:'🚨',ti:`Sistema de alto riesgo — necesitas ${ma}/${n} aciertos`,
+      tx:`El perfil se acerca a un parley clásico. Considera reducir el k máximo o elegir cuotas más bajas para bajar el umbral de rentabilidad. Recuerda: en apuestas de sistema, la consistencia supera al riesgo extremo.`});
+
+  // 3. Dispersión de cuotas
+  const spread=maxO-minO;
+  if(spread>1.5)
+    recs.push({t:'info',i:'📐',ti:'Alta dispersión de cuotas — aprovecha la estructura',
+      tx:`Tus cuotas van de ${minO.toFixed(2)} a ${maxO.toFixed(2)} (diferencia de ${spread.toFixed(2)}). Los parlays con la cuota baja son tu red de seguridad (más probabilidad de acertar). Los que incluyen la cuota alta son los que pueden disparar el retorno. Asegúrate de que la selección más alta esté bien fundamentada, es la que más impacta.`});
+
+  // 4. Stake por parlay
+  const pct=sp/stake*100;
+  if(pct<3)
+    recs.push({t:'warning',i:'💰',ti:'Stake muy bajo por parlay — revisa el sistema elegido',
+      tx:`Cada parlay recibe solo ${pct.toFixed(1)}% del stake ($${Math.round(sp).toLocaleString('es-CL')} CLP). Con fragmentación tan alta, las ganancias individuales tienen poco impacto. Considera un k más alto (menos combinaciones) o aumentar el monto total.`});
+  else if(pct>30)
+    recs.push({t:'info',i:'🎯',ti:'Alta concentración por parlay — perfil agresivo',
+      tx:`Cada parlay absorbe el ${pct.toFixed(1)}% del stake. Pocas combinaciones, mayor impacto de cada una. Funciona bien si las selecciones tienen alta confianza, pero la diversificación interna es baja.`});
+
+  // 5. Cuota riesgosa baja
+  if(minO<1.50)
+    recs.push({t:'danger',i:'🔍',ti:`Revisa la selección de cuota ${minO.toFixed(2)} (${nombres[idxMin]})`,
+      tx:`La casa le asigna una probabilidad implícita de ${(1/minO*100).toFixed(1)}% a esta selección. Para que tenga valor real, tú debes creer que ocurre con mayor probabilidad. Si no puedes justificarlo con datos, esta selección debilita el sistema. Activa el análisis EV para verificarlo.`});
+
+  // 6. Bankroll management
+  recs.push({t:'info',i:'🏦',ti:'Regla de bankroll: nunca más del 2–5% por sesión',
+    tx:`Un apostador profesional no destina más del 2–5% de su bankroll total a una sesión de sistema. Con tu stake actual de $${Math.round(stake).toLocaleString('es-CL')} CLP, tu bankroll recomendado es de $${Math.round(stake*20).toLocaleString('es-CL')}–$${Math.round(stake*50).toLocaleString('es-CL')} CLP. Esto protege la operación ante rachas negativas.`});
+
+  // 7. ROI máximo muy alto (cuotas altas combinadas)
+  if(maxROI>600)
+    recs.push({t:'info',i:'🏆',ti:`ROI potencial del +${maxROI.toFixed(0)}% — foco en escenarios intermedios`,
+      tx:`El retorno "todos aciertan" es extraordinario, pero ese escenario es estadísticamente raro. En la práctica, apunta a los filas de N-1 y N-2 aciertos de la tabla de escenarios como objetivo realista. Un +30–80% en escenarios intermedios ya representa un sistema muy sólido.`});
+
+  // 8. Consejo por sistema activo
+  const tips={
+    trixie:  {t:'positive',i:'📌',ti:'Trixie: ordena por confianza, no por cuota',tx:'Identifica cuáles son tus 2 selecciones más sólidas. El doble de esas dos es el que estadísticamente más cobrarás. El treble es el bono: no lo planifiques como resultado esperado, sino como regalo cuando todo sale bien.'},
+    patent:  {t:'info',    i:'📌',ti:'Patent: el single de alta cuota es la clave',tx:'El Patent justifica sus 7 apuestas principalmente cuando al menos una cuota supera 2.80. En ese caso, el single puede devolver casi el 30–40% del stake por sí solo. Compara Patent vs Trixie en la pestaña Sistemas antes de decidir.'},
+    yankee:  {t:'positive',i:'📌',ti:'Yankee: el estándar de los analíticos',tx:'La literatura de apuestas muestra que apostadores con tasa de acierto >52% generan ROI positivo consistente con el Yankee usando cuotas 1.80–2.50. La clave no es acertar todo, sino ser consistente en la calidad de las selecciones.'},
+    lucky15: {t:'info',    i:'📌',ti:'Lucky 15: define tu "comodín" antes de apostar',tx:'El Lucky 15 brilla cuando incluyes un comodín de cuota 4.00+. Si ese comodín solo acierta, el single lo rescata. Si aciertas además 2–3 de los otros, el retorno combinado puede ser considerable. Esa selección especial es la que define si vale la pena el Lucky 15 vs el Yankee.'},
+    lucky31: {t:'warning', i:'📌',ti:'Lucky 31: calidad sobre cantidad de selecciones',tx:'Con 31 apuestas el stake se fragmenta mucho. Asegúrate de que los retornos de dobles y trebles sean atractivos frente al coste total. Si las cuotas son bajas, considera si un Yankee con las 4 mejores selecciones es más eficiente.'},
+    lucky63: {t:'warning', i:'📌',ti:'Lucky 63: solo para análisis muy sólidos',tx:'63 apuestas exigen un nivel de investigación muy alto por selección. La rentabilidad cae rápido si incluyes selecciones débiles por llenado. Solo úsalo cuando tengas análisis profundo de los 6 partidos y una tasa de acierto histórica >55%.'},
+    heinz:   {t:'info',    i:'📌',ti:'Heinz: el equilibrio del experto en 6 selecciones',tx:'Sin singles, el Heinz es preferible cuando las 6 selecciones son de cuota similar y ninguna es un comodín de cuota muy alta. Si hay una de cuota 5.00+, el Lucky 63 puede ser más inteligente para no desperdiciar ese single de alto valor.'},
+  };
+  if(activeChip && tips[activeChip]) recs.push(tips[activeChip]);
+
+  document.getElementById('rec-sub').textContent=recs.length+' observaciones';
+  document.getElementById('rec-body').innerHTML=recs.map(r=>`
+    <div class="rec-item ${r.t}">
+      <span class="rec-icon">${r.i}</span>
+      <div><div class="rec-item-title">${r.ti}</div><div class="rec-item-text">${r.tx}</div></div>
+    </div>`).join('');
 }
 
-// ─── Escenarios ───────────────────────────────────────────────────
-function renderEscenarios(cuotas, parlays, stakeP, stake, n){
-  const idx = Array.from({length:n},(_,i)=>i);
-  let rows = '';
+// ══ HELPERS ══════════════════════════════════════════════════════
+function tagM(v,s){ return v>=s?`<span class="tag tag-g">$${Math.round(v).toLocaleString('es-CL')}</span>`:v>0?`<span class="tag tag-a">$${Math.round(v).toLocaleString('es-CL')}</span>`:`<span class="tag tag-r">$${Math.round(v).toLocaleString('es-CL')}</span>`; }
+function tagR(v){ const s=v>=0?'+':''; return v>=0?`<span class="tag tag-g">${s}${v.toFixed(1)}%</span>`:`<span class="tag tag-r">${v.toFixed(1)}%</span>`; }
+
+// ══ ESCENARIOS ═══════════════════════════════════════════════════
+function renderEscenarios(cuotas,parlays,sp,stake,n){
+  const idx=Array.from({length:n},(_,i)=>i); let rows='';
   for(let na=0;na<=n;na++){
-    const cs = combos(idx,na);
-    const rets = cs.map(c=>retorno(parlays,stakeP,c,cuotas));
-    const mejor = rets.length ? Math.max(...rets) : 0;
-    const peor  = rets.length ? Math.min(...rets) : 0;
-    const prom  = rets.length ? rets.reduce((a,b)=>a+b,0)/rets.length : 0;
-    rows += `<tr>
-      <td><strong>${na}/${n}</strong></td>
-      <td style="color:var(--muted)">${cs.length}</td>
-      <td>${tagMoney(mejor,stake)}</td>
-      <td>${tagROI((mejor-stake)/stake*100)}</td>
-      <td>${tagMoney(peor,stake)}</td>
-      <td>${tagROI((peor-stake)/stake*100)}</td>
-      <td>${tagMoney(prom,stake)}</td>
-    </tr>`;
+    const cs=combos(idx,na);
+    const rets=cs.map(c=>ret(parlays,sp,c,cuotas));
+    const mejor=rets.length?Math.max(...rets):0;
+    const peor=rets.length?Math.min(...rets):0;
+    const prom=rets.length?rets.reduce((a,b)=>a+b,0)/rets.length:0;
+    rows+=`<tr><td><strong>${na}/${n}</strong></td><td style="color:var(--muted)">${cs.length}</td><td>${tagM(mejor,stake)}</td><td>${tagR((mejor-stake)/stake*100)}</td><td>${tagM(peor,stake)}</td><td>${tagR((peor-stake)/stake*100)}</td><td>${tagM(prom,stake)}</td></tr>`;
   }
-  document.getElementById('tab-escenarios').innerHTML = `
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr>
-          <th>Aciertos</th><th>Combos</th>
-          <th>Mejor retorno</th><th>ROI mejor</th>
-          <th>Peor retorno</th><th>ROI peor</th>
-          <th>Promedio</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-    <p class="note">Stake total apostado: $${Math.round(parseFloat(document.getElementById('stake').value)).toLocaleString('es-CL')} CLP.
-    El "mejor" y "peor" retorno para cada fila corresponden al conjunto de aciertos más y menos favorable posible.</p>
-  `;
+  document.getElementById('tab-escenarios').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Aciertos</th><th>Combos</th><th>Mejor retorno</th><th>ROI mejor</th><th>Peor retorno</th><th>ROI peor</th><th>Promedio</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Stake total: $${Math.round(stake).toLocaleString('es-CL')} CLP · Verde ≥ stake · Naranja = retorno parcial · Rojo = pérdida total.</p>`;
 }
 
-// ─── Parlays ──────────────────────────────────────────────────────
-function renderParlays(parlays, stakeP, nombres, cuotas){
-  const max = 60;
-  let rows = '';
+// ══ PARLAYS ══════════════════════════════════════════════════════
+function renderParlays(parlays,sp,nombres,cuotas){
+  const max=60; let rows='';
   parlays.slice(0,max).forEach((p,i)=>{
-    const label = p.indices.map(j=>nombres[j]).join(' × ');
-    const odds = parlayOdds(p.indices, cuotas);
-    const ret = stakeP * odds;
-    const gan = ret - stakeP;
-    rows += `<tr>
-      <td style="color:var(--muted)">${i+1}</td>
-      <td class="td-name" title="${label}">${label}</td>
-      <td style="color:var(--muted)">${p.k}</td>
-      <td>${odds.toFixed(3)}</td>
-      <td>$${Math.round(stakeP).toLocaleString('es-CL')}</td>
-      <td><span class="tag tag-g">$${Math.round(ret).toLocaleString('es-CL')}</span></td>
-      <td><span class="tag tag-a">$${Math.round(gan).toLocaleString('es-CL')}</span></td>
-    </tr>`;
+    const label=p.indices.map(j=>nombres[j]).join(' × ');
+    const odds=pOdds(p.indices,cuotas), r=sp*odds;
+    rows+=`<tr><td style="color:var(--muted)">${i+1}</td><td class="td-name" title="${label}">${label}</td><td style="color:var(--muted)">${p.k}</td><td>${odds.toFixed(3)}</td><td>$${Math.round(sp).toLocaleString('es-CL')}</td><td><span class="tag tag-g">$${Math.round(r).toLocaleString('es-CL')}</span></td><td><span class="tag tag-a">$${Math.round(r-sp).toLocaleString('es-CL')}</span></td></tr>`;
   });
-  const extra = parlays.length > max
-    ? `<p class="note">Mostrando ${max} de ${parlays.length} parlays.</p>` : '';
-  document.getElementById('tab-parlays').innerHTML = `
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>#</th><th>Selecciones</th><th>k</th><th>Cuota comb.</th><th>Stake</th><th>Retorno</th><th>Ganancia</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>${extra}
-  `;
+  const extra=parlays.length>max?`<p class="note">Mostrando ${max} de ${parlays.length} parlays.</p>`:'';
+  document.getElementById('tab-parlays').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>#</th><th>Selecciones</th><th>k</th><th>Cuota comb.</th><th>Stake</th><th>Retorno</th><th>Ganancia</th></tr></thead><tbody>${rows}</tbody></table></div>${extra}`;
 }
 
-// ─── Comparativa ──────────────────────────────────────────────────
-function renderComparativa(cuotas, stake, n){
-  const idx = Array.from({length:n},(_,i)=>i);
-  let rows = '';
+// ══ COMPARATIVA ══════════════════════════════════════════════════
+function renderComparativa(cuotas,stake,n){
+  const idx=Array.from({length:n},(_,i)=>i); let rows='';
   for(let minK=1;minK<=n;minK++){
     for(let maxK=minK;maxK<=n;maxK++){
-      const parlays = genParlays(n,minK,maxK);
-      if(parlays.length > 250) continue;
-      const stakeP = stake/parlays.length;
-      const allRet = retorno(parlays,stakeP,idx,cuotas);
-      const roi = (allRet-stake)/stake*100;
-      let minAc = n+1;
+      const ps=genParlays(n,minK,maxK);
+      if(ps.length>250) continue;
+      const sp2=stake/ps.length;
+      const mr=ret(ps,sp2,idx,cuotas);
+      const roi=(mr-stake)/stake*100;
+      let ma2=n+1;
       for(let na=1;na<=n;na++){
-        const best = Math.max(...combos(idx,na).map(c=>retorno(parlays,stakeP,c,cuotas)));
-        if(best>=stake){minAc=na;break;}
+        if(Math.max(...combos(idx,na).map(c=>ret(ps,sp2,c,cuotas)))>=stake){ma2=na;break;}
       }
-      const [rtxt,rcls] = minAc<=Math.ceil(n/2)?['BAJO','tag-g']:minAc<n?['MEDIO','tag-a']:['ALTO','tag-r'];
-      const lbl = minK===maxK ? `${minK}/${n}` : `${minK}–${maxK}/${n}`;
-      rows += `<tr>
-        <td><strong>${lbl}</strong></td>
-        <td>${parlays.length}</td>
-        <td>$${Math.round(stakeP).toLocaleString('es-CL')}</td>
-        <td><span class="tag tag-g">$${Math.round(allRet).toLocaleString('es-CL')}</span></td>
-        <td>${tagROI(roi)}</td>
-        <td>${minAc}/${n}</td>
-        <td><span class="tag ${rcls}">${rtxt}</span></td>
-      </tr>`;
+      const [rt,rc]=ma2<=Math.ceil(n/2)?['BAJO','tag-g']:ma2<n?['MEDIO','tag-a']:['ALTO','tag-r'];
+      const lbl=minK===maxK?`${minK}/${n}`:`${minK}–${maxK}/${n}`;
+      rows+=`<tr><td><strong>${lbl}</strong></td><td>${ps.length}</td><td>$${Math.round(sp2).toLocaleString('es-CL')}</td><td><span class="tag tag-g">$${Math.round(mr).toLocaleString('es-CL')}</span></td><td>${tagR(roi)}</td><td>${ma2}/${n}</td><td><span class="tag ${rc}">${rt}</span></td></tr>`;
     }
   }
-  document.getElementById('tab-comparativa').innerHTML = `
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>Sistema</th><th>Parlays</th><th>Stake/parlay</th><th>Retorno máx.</th><th>ROI máx.</th><th>Mín. aciertos</th><th>Riesgo</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-    <p class="note">Sistemas con más de 250 parlays se omiten. "Mín. aciertos" = cuántos debes acertar en el mejor conjunto posible para no perder.</p>
-  `;
+  document.getElementById('tab-comparativa').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Sistema</th><th>Parlays</th><th>Stake/parlay</th><th>Retorno máx.</th><th>ROI máx.</th><th>Mín. aciertos</th><th>Riesgo</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Sistemas con más de 250 parlays no se muestran. "Mín. aciertos" = mejor conjunto posible de ese tamaño.</p>`;
 }
 
-// ─── EV ───────────────────────────────────────────────────────────
-function renderEV(cuotas, nombres, stakeP){
-  let rows = '';
-  let allPositive = true;
+// ══ EV ═══════════════════════════════════════════════════════════
+function renderEV(cuotas,nombres,sp){
+  let rows='';
   cuotas.forEach((c,i)=>{
-    const inp = document.getElementById('prob-'+i);
-    const pct = inp ? parseFloat(inp.value) : NaN;
-    if(isNaN(pct)||pct<=0||pct>=100){ rows += `<tr><td class="td-name">${nombres[i]}</td><td>${c.toFixed(2)}</td><td colspan="4" style="color:var(--dim)">— sin prob. estimada</td></tr>`; return; }
-    const p = pct/100;
-    const pImp = 1/c*100;
-    const edge = pct - pImp;
-    const ev = stakeP*(c*p-1);
-    const hasVal = edge > 0;
-    if(!hasVal) allPositive = false;
-    rows += `<tr>
-      <td class="td-name">${nombres[i]}</td>
-      <td>${c.toFixed(2)}</td>
-      <td style="color:var(--muted)">${pImp.toFixed(1)}%</td>
-      <td>${pct.toFixed(1)}%</td>
-      <td>${hasVal?`<span class="tag tag-g">+${edge.toFixed(1)}%</span>`:`<span class="tag tag-r">${edge.toFixed(1)}%</span>`}</td>
-      <td>${ev>=0?`<span class="tag tag-g">$${Math.round(ev).toLocaleString('es-CL')}</span>`:`<span class="tag tag-r">−$${Math.round(Math.abs(ev)).toLocaleString('es-CL')}</span>`}</td>
-    </tr>`;
+    const inp=document.getElementById('prob-'+i);
+    const pct=inp?parseFloat(inp.value):NaN;
+    if(isNaN(pct)||pct<=0||pct>=100){rows+=`<tr><td class="td-name">${nombres[i]}</td><td>${c.toFixed(2)}</td><td colspan="4" style="color:var(--dim)">— sin prob. estimada</td></tr>`;return;}
+    const p=pct/100,pI=1/c*100,edge=pct-pI,ev=sp*(c*p-1);
+    rows+=`<tr><td class="td-name">${nombres[i]}</td><td>${c.toFixed(2)}</td><td style="color:var(--muted)">${pI.toFixed(1)}%</td><td>${pct.toFixed(1)}%</td><td>${edge>0?`<span class="tag tag-g">+${edge.toFixed(1)}%</span>`:`<span class="tag tag-r">${edge.toFixed(1)}%</span>`}</td><td>${ev>=0?`<span class="tag tag-g">$${Math.round(ev).toLocaleString('es-CL')}</span>`:`<span class="tag tag-r">−$${Math.round(Math.abs(ev)).toLocaleString('es-CL')}</span>`}</td></tr>`;
   });
-  document.getElementById('tab-ev').innerHTML = `
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>Selección</th><th>Cuota</th><th>P. implícita</th><th>P. estimada</th><th>Edge</th><th>EV / parlay</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-    <p class="note">Edge = tu prob. estimada menos la prob. implícita de la casa. EV positivo = valor esperado favorable para esa selección.</p>
-  `;
+  document.getElementById('tab-ev').innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>Selección</th><th>Cuota</th><th>P. implícita</th><th>P. estimada</th><th>Edge</th><th>EV / parlay</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">Edge = tu prob. estimada − prob. implícita de la casa. EV positivo indica valor esperado favorable para esa selección.</p>`;
 }
 
-// ─── Tabs ─────────────────────────────────────────────────────────
-function showTab(name, btn){
+// ══ TABS ═════════════════════════════════════════════════════════
+function showTab(name,btn){
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
 }
 </script>
-
 </body>
 </html>
