@@ -742,14 +742,48 @@ async function cargarSheets(){
 
   const st = document.getElementById('sheets-status');
   st.className='sheets-status loading';
-  st.innerHTML='<div class="spinner"></div> Cargando datos...';
+  st.innerHTML='<div class="spinner"></div> Conectando...';
+
+  // Proxies CORS en orden de prioridad — se prueba el siguiente si el anterior falla
+  const PROXIES = [
+    u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    u => `https://thingproxy.freeboard.io/fetch/${u}`,
+  ];
+
+  let csv = null;
+  let lastErr = '';
+
+  for(let i=0; i<PROXIES.length; i++){
+    const proxyUrl = PROXIES[i](url);
+    st.innerHTML=`<div class="spinner"></div> Probando conexión ${i+1}/${PROXIES.length}...`;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(()=>controller.abort(), 8000);
+      const res = await fetch(proxyUrl, { signal: controller.signal });
+      clearTimeout(timeout);
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const text = await res.text();
+      // Validar que parece un CSV real (no un error HTML del proxy)
+      if(text.trim().startsWith('<')) throw new Error('Respuesta HTML — proxy bloqueado');
+      if(text.trim().length < 5)      throw new Error('Respuesta vacía');
+      csv = text;
+      break; // éxito — salir del loop
+    } catch(e){
+      lastErr = e.message || String(e);
+    }
+  }
+
+  if(!csv){
+    st.className='sheets-status error';
+    st.innerHTML=`✕ Todos los proxies fallaron. Verifica que la URL del Sheet sea pública y en formato CSV.<br><span style="font-size:11px;opacity:.7">${lastErr}</span>`;
+    return;
+  }
 
   try {
-    // CORS proxy para Google Sheets CSV
-    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-    const res = await fetch(proxyUrl);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const csv = await res.text();
+    // Normalizar saltos de línea y procesar
+    csv = csv.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
     const rows = parseCSV(csv);
     if(rows.length < 2) throw new Error('La planilla está vacía o no tiene datos desde la fila 2.');
 
