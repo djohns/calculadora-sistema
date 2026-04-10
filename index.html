@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulador Betano - Sistema</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+      --good: #34d399;
+      --bad: #f87171;
+      --line: #334155;
+      --chip: #0b1220;
+      --input: #0b1220;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #0b1120 0%, #111827 100%);
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    h1, h2, h3 { margin: 0; }
+    h1 { font-size: 28px; }
+    p { margin: 0; color: var(--muted); }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.2);
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .subtle { color: var(--muted); font-size: 14px; }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input, textarea, select, button {
+      font: inherit;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background: var(--input);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(96,165,250,.15);
+    }
+
+    textarea { min-height: 140px; resize: vertical; }
+
+    .btns { display: flex; flex-wrap: wrap; gap: 10px; }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      color: #fff;
+      background: var(--accent);
+      cursor: pointer;
+      font-weight: 700;
+    }
+    button.secondary { background: #374151; }
+    button.ghost { background: transparent; border: 1px solid var(--line); }
+    button:hover { filter: brightness(1.05); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pill.good { color: #bbf7d0; border-color: rgba(52,211,153,.3); }
+    .pill.bad { color: #fecaca; border-color: rgba(248,113,113,.3); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th { color: #cbd5e1; background: rgba(255,255,255,.02); position: sticky; top: 0; }
+    tr.highlight { background: rgba(96,165,250,.08); }
+
+    .muted { color: var(--muted); }
+    .big { font-size: 22px; font-weight: 800; }
+    .small { font-size: 12px; color: var(--muted); }
+    .warn { color: #fca5a5; }
+    .ok { color: #86efac; }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .pick-row {
+      display: grid;
+      grid-template-columns: 1.1fr .8fr .8fr auto;
+      gap: 10px;
+      align-items: end;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.02);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .tab.active { background: rgba(96,165,250,.16); border-color: rgba(96,165,250,.45); }
+
+    .hidden { display: none; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.02);
+    }
+
+    .metric .label { font-size: 12px; color: var(--muted); }
+    .metric .value { font-size: 20px; font-weight: 800; margin-top: 4px; }
+
+    .top-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chart-bar-wrap { display: grid; gap: 8px; }
+    .chart-bar { display: grid; grid-template-columns: 180px 1fr 100px; gap: 10px; align-items: center; }
+    .bar-track {
+      position: relative;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(96,165,250,.95), rgba(52,211,153,.95));
+    }
+
+    @media (max-width: 1100px) {
+      .grid-2, .grid-3, .row, .row-3, .two-col, .metric-grid { grid-template-columns: 1fr; }
+      .pick-row { grid-template-columns: 1fr; }
+      .chart-bar { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grid grid-2">
+      <div class="card">
+        <h1>Simulador avanzado de apuestas de sistema</h1>
+        <p class="subtle" style="margin-top:8px;">
+          Compara combinada, simples y sistemas comunes con EV, riesgo, Kelly fraccional y simulación Monte Carlo.
+        </p>
+
+        <div class="row" style="margin-top:16px;">
+          <div class="field">
+            <label>Banca</label>
+            <input id="bankroll" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label>Monto a invertir</label>
+            <input id="stake" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label>Edge global estimado (%)</label>
+            <input id="edgePct" type="range" min="-20" max="20" step="1" />
+            <div class="small"><span id="edgePctLabel"></span></div>
+          </div>
+          <div class="field">
+            <label>Límite máximo de riesgo (%)</label>
+            <input id="maxRiskPct" type="range" min="1" max="20" step="1" />
+            <div class="small"><span id="maxRiskPctLabel"></span></div>
+          </div>
+        </div>
+
+        <div class="row-3" style="margin-top:14px;">
+          <div class="field">
+            <label>Perfil de decisión</label>
+            <select id="objective">
+              <option value="conservative">Conservador</option>
+              <option value="balanced" selected>Balanceado</option>
+              <option value="aggressive">Agresivo</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Simulaciones Monte Carlo</label>
+            <input id="simulations" type="number" min="1000" step="1000" />
+          </div>
+          <div class="field">
+            <label>Acciones</label>
+            <div class="btns">
+              <button id="addPickBtn" type="button">Agregar pick</button>
+              <button id="resetBtn" type="button" class="secondary">Restablecer</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabs" style="margin-top:16px;">
+          <button class="tab active" id="tabManual" type="button">Manual</button>
+          <button class="tab" id="tabBatch" type="button">Pega cuotas</button>
+        </div>
+
+        <div id="panelManual">
+          <div id="pickList" class="list"></div>
+        </div>
+
+        <div id="panelBatch" class="hidden">
+          <div class="field">
+            <label>Formato por línea: cuota|confianza</label>
+            <textarea id="batchText">1.28|50
+1.32|50
+1.35|50</textarea>
+          </div>
+          <div class="btns" style="margin-top:10px;">
+            <button id="loadBatchBtn" type="button">Cargar picks</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Recomendación automática</h2>
+        <div id="recommendationBox" class="metric"></div>
+
+        <div class="top-note" id="topNote"></div>
+
+        <div style="height:14px"></div>
+        <h2 class="section-title">Señales clave</h2>
+        <div class="metric-grid">
+          <div class="metric"><div class="label">Stake sugerido</div><div class="value" id="suggestedStake">—</div></div>
+          <div class="metric"><div class="label">Tu stake actual</div><div class="value" id="currentStake">—</div></div>
+          <div class="metric"><div class="label">Profit esperado</div><div class="value" id="bestEv">—</div></div>
+          <div class="metric"><div class="label">ROI esperado</div><div class="value" id="bestRoi">—</div></div>
+        </div>
+
+        <div style="height:14px"></div>
+        <div id="riskMessage" class="metric"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="card">
+        <h2 class="section-title">Comparación completa</h2>
+        <div class="small">Ordenada por score según tu perfil de riesgo.</div>
+        <div style="overflow:auto; margin-top:12px; max-height: 680px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Estrategia</th>
+                <th>Bets</th>
+                <th>EV</th>
+                <th>ROI</th>
+                <th>Riesgo σ</th>
+                <th>Pérdida</th>
+                <th>Kelly</th>
+              </tr>
+            </thead>
+            <tbody id="metricsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Simulación Monte Carlo</h2>
+        <div class="small">Se muestra el promedio simulado de la estrategia mejor rankeada.</div>
+        <div id="mcBox" class="metric" style="margin-top:12px;"></div>
+        <div style="height:14px"></div>
+        <div id="chartBox" class="chart-bar-wrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_PICKS = [
+      { id: 1, label: 'Pick 1', odds: '1.28', confidence: 50 },
+      { id: 2, label: 'Pick 2', odds: '1.32', confidence: 50 },
+      { id: 3, label: 'Pick 3', odds: '1.35', confidence: 50 },
+    ];
+
+    let picks = structuredClone(DEFAULT_PICKS);
+    let bankroll = 300000;
+    let stake = 30000;
+    let edgePct = 0;
+    let maxRiskPct = 10;
+    let objective = 'balanced';
+    let simulations = 10000;
+    let activeTab = 'manual';
+
+    const el = (id) => document.getElementById(id);
+
+    function formatCLP(value) {
+      return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Number.isFinite(value) ? value : 0);
+    }
+
+    function formatPct(value) {
+      return `${value.toFixed(1)}%`;
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function parseOdds(raw) {
+      const n = Number(String(raw).replace(',', '.').trim());
+      return Number.isFinite(n) && n > 1 ? n : null;
+    }
+
+    function formatMoneyInput(raw) {
+      const digits = String(raw).replace(/[^\d]/g, '');
+      if (!digits) return '';
+      return new Intl.NumberFormat('es-CL').format(Number(digits));
+    }
+
+    function moneyToNumber(raw) {
+      const digits = String(raw).replace(/[^\d]/g, '');
+      return digits ? Number(digits) : 0;
+    }
+
+    function combinations(arr, k) {
+      const out = [];
+      const helper = (start, path) => {
+        if (path.length === k) { out.push([...path]); return; }
+        for (let i = start; i < arr.length; i++) {
+          path.push(arr[i]);
+          helper(i + 1, path);
+          path.pop();
+        }
+      };
+      if (k >= 1 && k <= arr.length) helper(0, []);
+      return out;
+    }
+
+    function product(nums) {
+      return nums.reduce((acc, n) => acc * n, 1);
+    }
+
+    function buildStrategies(n) {
+      const idx = Array.from({ length: n }, (_, i) => i);
+      const s = [];
+      if (n >= 1) {
+        s.push({ id: 'simples', name: 'Simples', desc: 'Una apuesta por cada pick.', groups: idx.map(i => [i]) });
+        s.push({ id: 'combo', name: 'Combinada total', desc: 'Una sola apuesta con todos los picks.', groups: [idx] });
+      }
+      if (n >= 2) s.push({ id: 'doubles', name: 'Dobles', desc: 'Todas las combinaciones de 2 picks.', groups: combinations(idx, 2) });
+      if (n >= 3) s.push({ id: 'triples', name: 'Triples', desc: 'Todas las combinaciones de 3 picks.', groups: combinations(idx, 3) });
+      if (n >= 4) s.push({ id: 'quads', name: 'Cuádruples', desc: 'Todas las combinaciones de 4 picks.', groups: combinations(idx, 4) });
+      if (n === 3) {
+        s.push({ id: 'trixie', name: 'Trixie', desc: '3 dobles + 1 triple.', groups: [...combinations(idx, 2), ...combinations(idx, 3)] });
+        s.push({ id: 'patent', name: 'Patent', desc: '3 simples + 3 dobles + 1 triple.', groups: [...combinations(idx, 1), ...combinations(idx, 2), ...combinations(idx, 3)] });
+      }
+      if (n === 4) {
+        s.push({ id: 'yankee', name: 'Yankee', desc: '6 dobles + 4 triples + 1 cuádruple.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4)] });
+        s.push({ id: 'lucky15', name: 'Lucky 15', desc: '4 simples + 6 dobles + 4 triples + 1 cuádruple.', groups: [...combinations(idx, 1), ...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4)] });
+      }
+      if (n === 5) {
+        s.push({ id: 'canadian', name: 'Canadian', desc: '10 dobles + 10 triples + 5 cuádruples + 1 quíntuple.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5)] });
+        s.push({ id: 'lucky31', name: 'Lucky 31', desc: '5 simples + 10 dobles + 10 triples + 5 cuádruples + 1 quíntuple.', groups: [...combinations(idx, 1), ...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5)] });
+      }
+      if (n === 6) s.push({ id: 'heinz', name: 'Heinz', desc: '15 dobles + 20 triples + 15 cuádruples + 6 quíntuples + 1 séxtuple.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5), ...combinations(idx, 6)] });
+      if (n === 7) s.push({ id: 'superHeinz', name: 'Super Heinz', desc: 'Cobertura muy amplia para 7 picks.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5), ...combinations(idx, 6), ...combinations(idx, 7)] });
+      if (n === 8) s.push({ id: 'goliath', name: 'Goliath', desc: 'Máxima cobertura clásica.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5), ...combinations(idx, 6), ...combinations(idx, 7), ...combinations(idx, 8)] });
+      return s;
+    }
+
+    function oddsToProbability(odd, edgePct, confidence) {
+      const implied = 1 / odd;
+      const edgeMultiplier = 1 + edgePct / 100;
+      const confMultiplier = 0.8 + (clamp(confidence, 0, 100) / 100) * 0.4;
+      return clamp(implied * edgeMultiplier * confMultiplier, 0.01, 0.99);
+    }
+
+    function outcomeProbability(outcome, probabilities) {
+      let p = 1;
+      for (let i = 0; i < outcome.length; i++) {
+        p *= outcome[i] ? probabilities[i] : (1 - probabilities[i]);
+      }
+      return p;
+    }
+
+    function enumerateOutcomes(n) {
+      const total = 1 << n;
+      const list = [];
+      for (let mask = 0; mask < total; mask++) {
+        const arr = [];
+        for (let i = 0; i < n; i++) arr.push(Boolean(mask & (1 << i)));
+        list.push(arr);
+      }
+      return list;
+    }
+
+    function strategyProfitForOutcome(outcome, odds, groups, totalStake) {
+      const unit = totalStake / groups.length;
+      let profit = 0;
+      for (const group of groups) {
+        const win = group.every(i => outcome[i]);
+        if (win) profit += unit * (product(group.map(i => odds[i])) - 1);
+        else profit -= unit;
+      }
+      return profit;
+    }
+
+    function mcEvaluate(odds, probabilities, groups, totalStake, iterations) {
+      let profitSum = 0;
+      let positive = 0;
+      for (let t = 0; t < iterations; t++) {
+        const outcome = probabilities.map(p => Math.random() < p);
+        const profit = strategyProfitForOutcome(outcome, odds, groups, totalStake);
+        profitSum += profit;
+        if (profit > 0) positive += 1;
+      }
+      return { avgProfit: profitSum / iterations, profitProb: (positive / iterations) * 100 };
+    }
+
+    function objectiveWeights(profile) {
+      if (profile === 'conservative') return { risk: 1.25, downside: 0.9, complexity: 12 };
+      if (profile === 'aggressive') return { risk: 0.45, downside: 0.25, complexity: 8 };
+      return { risk: 0.8, downside: 0.5, complexity: 10 };
+    }
+
+    function compute() {
+      const clean = picks
+        .map(p => ({
+          ...p,
+          odd: parseOdds(p.odds),
+          confidence: clamp(Number(p.confidence) || 50, 0, 100)
+        }))
+        .filter(p => p.odd !== null);
+
+      const odds = clean.map(p => p.odd);
+      const probabilities = clean.map(p => oddsToProbability(p.odd, edgePct, p.confidence));
+      const strategies = buildStrategies(odds.length);
+      const outcomes = enumerateOutcomes(odds.length);
+      const w = objectiveWeights(objective);
+      const results = [];
+
+      for (const s of strategies) {
+        const totalStake = stake;
+        let expectedProfit = 0;
+        let expectedSq = 0;
+        let lossProb = 0;
+        let profitProb = 0;
+        let minProfit = Infinity;
+        let maxProfit = -Infinity;
+
+        for (const outcome of outcomes) {
+          const p = outcomeProbability(outcome, probabilities);
+          const profit = strategyProfitForOutcome(outcome, odds, s.groups, totalStake);
+          expectedProfit += p * profit;
+          expectedSq += p * profit * profit;
+          if (profit < 0) lossProb += p;
+          if (profit > 0) profitProb += p;
+          minProfit = Math.min(minProfit, profit);
+          maxProfit = Math.max(maxProfit, profit);
+        }
+
+        const variance = Math.max(0, expectedSq - expectedProfit * expectedProfit);
+        const stdev = Math.sqrt(variance);
+        const roi = totalStake > 0 ? expectedProfit / totalStake : 0;
+        const meanRoi = roi;
+        const roiVariance = totalStake > 0 ? variance / (totalStake * totalStake) : 0;
+        const rawKelly = roiVariance > 0 ? Math.max(0, meanRoi / roiVariance) : 0;
+        const kellyFraction = clamp(rawKelly, 0, maxRiskPct / 100);
+        const fractionalKelly = kellyFraction * 0.25;
+        const suggestedStake = bankroll * fractionalKelly;
+        const score = expectedProfit - w.risk * stdev - w.downside * lossProb * totalStake - w.complexity * s.groups.length;
+
+        results.push({
+          id: s.id,
+          name: s.name,
+          description: s.desc,
+          bets: s.groups.length,
+          unitStake: totalStake / s.groups.length,
+          expectedProfit,
+          expectedReturn: totalStake + expectedProfit,
+          roi,
+          stdev,
+          lossProb,
+          profitProb,
+          minProfit,
+          maxProfit,
+          kellyFraction,
+          suggestedStake,
+          score
+        });
+      }
+
+      results.sort((a, b) => b.score - a.score);
+      const best = results[0] || null;
+      const cap = bankroll * (maxRiskPct / 100);
+      const recommendedStake = best ? Math.min(stake, best.suggestedStake, cap) : 0;
+      const overCap = stake > cap;
+      const strategy = best ? strategies.find(s => s.name === best.name) : null;
+      const mc = (best && strategy) ? mcEvaluate(odds, probabilities, strategy.groups, stake, simulations) : null;
+
+      render(results, best, recommendedStake, cap, overCap, mc, odds);
+    }
+
+    function render(results, best, recommendedStake, cap, overCap, mc, odds) {
+      el('edgePctLabel').textContent = `${edgePct}%`; 
+      el('maxRiskPctLabel').textContent = `${maxRiskPct}%`; 
+      el('suggestedStake').textContent = best ? formatCLP(recommendedStake) : '—';
+      el('currentStake').textContent = formatCLP(stake);
+      el('bestEv').textContent = best ? formatCLP(best.expectedProfit) : '—';
+      el('bestRoi').textContent = best ? formatPct(best.roi * 100) : '—';
+
+      const bestBox = el('recommendationBox');
+      if (!best) {
+        bestBox.innerHTML = `<div class="muted">Ingresa al menos un pick válido.</div>`;
+      } else {
+        bestBox.innerHTML = `
+          <div class="pill good">Mejor opción</div>
+          <div class="big" style="margin-top:8px;">${best.name}</div>
+          <div style="margin-top:8px; color: var(--muted); font-size: 14px;">${best.description}</div>
+        `;
+      }
+
+      const topNote = el('topNote');
+      topNote.innerHTML = '';
+      if (best) {
+        const notes = [
+          `EV: ${formatCLP(best.expectedProfit)}`,
+          `Riesgo σ: ${formatCLP(best.stdev)}`,
+          `Prob. positiva: ${formatPct(best.profitProb)}`,
+          `Kelly: ${formatPct(best.kellyFraction * 100)}`
+        ];
+        for (const note of notes) {
+          const span = document.createElement('div');
+          span.className = 'pill';
+          span.textContent = note;
+          topNote.appendChild(span);
+        }
+      }
+
+      el('riskMessage').innerHTML = overCap
+        ? `<div class="pill bad">El stake supera el límite de riesgo sobre banca.</div><div style="margin-top:8px;" class="warn">Cap permitido: ${formatCLP(cap)}</div>`
+        : `<div class="pill good">El stake está dentro del límite de riesgo.</div><div style="margin-top:8px;" class="ok">Cap permitido: ${formatCLP(cap)}</div>`;
+
+      el('mcBox').innerHTML = mc
+        ? `<div class="label">Promedio simulado</div><div class="value">${formatCLP(mc.avgProfit)}</div><div class="small">Prob. de terminar en positivo: ${formatPct(mc.profitProb)}</div>`
+        : `<div class="muted">Simulación no disponible.</div>`;
+
+      const tbody = el('metricsTable');
+      tbody.innerHTML = '';
+      results.forEach((r, idx) => {
+        const tr = document.createElement('tr');
+        if (idx === 0) tr.className = 'highlight';
+        tr.innerHTML = `
+          <td><strong>${r.name}</strong><div class="small">${r.description}</div></td>
+          <td>${r.bets}</td>
+          <td>${formatCLP(r.expectedProfit)}</td>
+          <td>${formatPct(r.roi * 100)}</td>
+          <td>${formatCLP(r.stdev)}</td>
+          <td>${formatPct(r.lossProb * 100)}</td>
+          <td>${formatPct(r.kellyFraction * 100)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const maxEv = Math.max(...results.map(r => Math.abs(r.expectedProfit)), 1);
+      const chart = el('chartBox');
+      chart.innerHTML = '';
+      results.slice(0, Math.min(results.length, 8)).forEach(r => {
+        const row = document.createElement('div');
+        row.className = 'chart-bar';
+        const width = Math.max(0, Math.min(100, (Math.abs(r.expectedProfit) / maxEv) * 100));
+        row.innerHTML = `
+          <div><strong>${r.name}</strong></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${width}%;"></div></div>
+          <div style="text-align:right;">${formatCLP(r.expectedProfit)}</div>
+        `;
+        chart.appendChild(row);
+      });
+    }
+
+    function renderPicks() {
+      const list = el('pickList');
+      list.innerHTML = '';
+      picks.forEach(p => {
+        const row = document.createElement('div');
+        row.className = 'pick-row';
+        row.innerHTML = `
+          <div class="field">
+            <label>Nombre del pick</label>
+            <input data-id="${p.id}" data-field="label" value="${p.label}" />
+          </div>
+          <div class="field">
+            <label>Cuota</label>
+            <input data-id="${p.id}" data-field="odds" value="${p.odds}" />
+          </div>
+          <div class="field">
+            <label>Confianza (%)</label>
+            <input data-id="${p.id}" data-field="confidence" type="number" min="0" max="100" value="${p.confidence}" />
+          </div>
+          <div>
+            <button class="ghost" type="button" data-remove="${p.id}">Eliminar</button>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+
+      list.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const id = Number(e.target.dataset.id);
+          const field = e.target.dataset.field;
+          const value = field === 'confidence' ? Number(e.target.value || 50) : e.target.value;
+          picks = picks.map(p => p.id === id ? { ...p, [field]: value } : p);
+          compute();
+        });
+      });
+
+      list.querySelectorAll('[data-remove]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = Number(e.currentTarget.dataset.remove);
+          picks = picks.filter(p => p.id !== id);
+          renderPicks();
+          compute();
+        });
+      });
+    }
+
+    function syncInputs() {
+      el('bankroll').value = formatMoneyInput(String(bankroll));
+      el('stake').value = formatMoneyInput(String(stake));
+      el('edgePct').value = edgePct;
+      el('maxRiskPct').value = maxRiskPct;
+      el('objective').value = objective;
+      el('simulations').value = simulations;
+      el('edgePctLabel').textContent = `${edgePct}%`;
+      el('maxRiskPctLabel').textContent = `${maxRiskPct}%`;
+    }
+
+    function loadBatch() {
+      const lines = el('batchText').value.split(/\n|;|\|/).map(x => x.trim()).filter(Boolean);
+      const next = [];
+      for (let i = 0; i < lines.length; i++) {
+        const parts = lines[i].includes(',') ? lines[i].split(',') : lines[i].split(/\s+/);
+        const odds = parts[0]?.trim() ?? '';
+        const confidence = parts[1] ? clamp(Number(parts[1]), 0, 100) : 50;
+        next.push({ id: i + 1, label: `Pick ${i + 1}`, odds, confidence });
+      }
+      if (next.length) picks = next;
+      renderPicks();
+      compute();
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      el('tabManual').classList.toggle('active', tab === 'manual');
+      el('tabBatch').classList.toggle('active', tab === 'batch');
+      el('panelManual').classList.toggle('hidden', tab !== 'manual');
+      el('panelBatch').classList.toggle('hidden', tab !== 'batch');
+    }
+
+    // events
+    el('bankroll').addEventListener('input', (e) => { bankroll = moneyToNumber(e.target.value); e.target.value = formatMoneyInput(e.target.value); compute(); });
+    el('stake').addEventListener('input', (e) => { stake = moneyToNumber(e.target.value); e.target.value = formatMoneyInput(e.target.value); compute(); });
+    el('edgePct').addEventListener('input', (e) => { edgePct = Number(e.target.value); syncInputs(); compute(); });
+    el('maxRiskPct').addEventListener('input', (e) => { maxRiskPct = Number(e.target.value); syncInputs(); compute(); });
+    el('objective').addEventListener('change', (e) => { objective = e.target.value; compute(); });
+    el('simulations').addEventListener('input', (e) => { simulations = Math.max(1000, Number(e.target.value || 10000)); compute(); });
+    el('addPickBtn').addEventListener('click', () => { const nextId = Math.max(0, ...picks.map(p => p.id)) + 1; picks.push({ id: nextId, label: `Pick ${nextId}`, odds: '1.50', confidence: 50 }); renderPicks(); compute(); });
+    el('resetBtn').addEventListener('click', () => { picks = structuredClone(DEFAULT_PICKS); bankroll = 300000; stake = 30000; edgePct = 0; maxRiskPct = 10; objective = 'balanced'; simulations = 10000; syncInputs(); renderPicks(); compute(); });
+    el('loadBatchBtn').addEventListener('click', loadBatch);
+    el('tabManual').addEventListener('click', () => setTab('manual'));
+    el('tabBatch').addEventListener('click', () => setTab('batch'));
+
+    // init
+    syncInputs();
+    renderPicks();
+    compute();
+  </script>
+</body>
+</html>
