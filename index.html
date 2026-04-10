@@ -128,7 +128,7 @@
     .list { display: grid; gap: 10px; }
     .pick-row {
       display: grid;
-      grid-template-columns: 1.1fr .8fr .8fr .9fr auto;
+      grid-template-columns: 1.1fr .8fr .9fr auto;
       gap: 10px;
       align-items: end;
       padding: 12px;
@@ -235,17 +235,17 @@
 
         <div id="panelBatch" class="hidden">
           <div class="field">
-            <label>Formato recomendado: Pick 1 | 1.28 | 50 | 64</label>
-            <textarea id="batchText">Pick 1 | 1.28 | 50 | 64
-Pick 2 | 1.32 | 50 | 61
-Pick 3 | 1.35 | 50 | 59</textarea>
+            <label>Formato recomendado: Pick 1 | 1.28 | 64</label>
+            <textarea id="batchText">Pick 1 | 1.28 | 64
+Pick 2 | 1.32 | 61
+Pick 3 | 1.35 | 59</textarea>
           </div>
           <div class="btns" style="margin-top:10px;">
             <button id="loadBatchBtn" type="button">Cargar picks</button>
             <button id="clearBatchBtn" type="button" class="danger">Limpiar pegado</button>
           </div>
           <p class="small" style="margin-top:8px;">
-            Formatos soportados: <b>Pick 1 | cuota | confianza | probabilidad real</b>, <b>cuota | confianza</b>, o <b>cuota | confianza | probabilidad real</b>.
+            Formatos soportados: <b>Pick 1 | cuota | probabilidad real</b>, <b>cuota | probabilidad real</b> o solo <b>cuota</b>.
           </p>
         </div>
       </div>
@@ -302,12 +302,12 @@ Pick 3 | 1.35 | 50 | 59</textarea>
   </div>
 
   <script>
-    const STORAGE_KEY = 'betano_system_simulator_v3';
+    const STORAGE_KEY = 'betano_system_simulator_v4';
 
     const DEFAULT_PICKS = [
-      { id: 1, label: 'Pick 1', odds: '1.28', confidence: 50, realProb: 64 },
-      { id: 2, label: 'Pick 2', odds: '1.32', confidence: 50, realProb: 61 },
-      { id: 3, label: 'Pick 3', odds: '1.35', confidence: 50, realProb: 59 },
+      { id: 1, label: 'Pick 1', odds: '1.28', realProb: 64 },
+      { id: 2, label: 'Pick 2', odds: '1.32', realProb: 61 },
+      { id: 3, label: 'Pick 3', odds: '1.35', realProb: 59 },
     ];
 
     let picks = structuredClone(DEFAULT_PICKS);
@@ -392,15 +392,10 @@ Pick 3 | 1.35 | 50 | 59</textarea>
     }
 
     function modelProbability(pick, odd) {
-      // Prioridad: probabilidad real pegada por el usuario.
       if (Number.isFinite(pick.realProb) && pick.realProb > 0) return clamp(pick.realProb / 100, 0.01, 0.99);
-
-      // Si no viene probabilidad real, se usa una estimación automática:
-      // probabilidad implícita sin margen * ajuste por edge * ajuste por confianza.
       const base = impliedProbability(odd);
       const edgeMultiplier = 1 + edgePct / 100;
-      const confMultiplier = 0.8 + (clamp(pick.confidence ?? 50, 0, 100) / 100) * 0.4;
-      return clamp(base * edgeMultiplier * confMultiplier, 0.01, 0.99);
+      return clamp(base * edgeMultiplier, 0.01, 0.99);
     }
 
     function outcomeProbability(outcome, probabilities) {
@@ -478,7 +473,6 @@ Pick 3 | 1.35 | 50 | 59</textarea>
         .map(p => ({
           ...p,
           odd: parseOdds(p.odds),
-          confidence: clamp(Number(p.confidence) || 50, 0, 100),
           realProb: Number.isFinite(Number(p.realProb)) ? clamp(Number(p.realProb), 0, 100) : null,
         }))
         .filter(p => p.odd !== null);
@@ -657,10 +651,6 @@ Pick 3 | 1.35 | 50 | 59</textarea>
             <input data-id="${p.id}" data-field="odds" value="${String(p.odds || '')}" />
           </div>
           <div class="field">
-            <label>Confianza (%)</label>
-            <input data-id="${p.id}" data-field="confidence" type="number" min="0" max="100" value="${Number.isFinite(Number(p.confidence)) ? p.confidence : 50}" />
-          </div>
-          <div class="field">
             <label>Probabilidad real (%)</label>
             <input data-id="${p.id}" data-field="realProb" type="number" min="0" max="100" placeholder="Auto" value="${Number.isFinite(Number(p.realProb)) ? p.realProb : ''}" />
           </div>
@@ -675,7 +665,7 @@ Pick 3 | 1.35 | 50 | 59</textarea>
         input.addEventListener('input', (e) => {
           const id = Number(e.target.dataset.id);
           const field = e.target.dataset.field;
-          const value = field === 'confidence' || field === 'realProb' ? (e.target.value === '' ? null : Number(e.target.value)) : e.target.value;
+          const value = field === 'realProb' ? (e.target.value === '' ? null : Number(e.target.value)) : e.target.value;
           picks = picks.map(p => p.id === id ? { ...p, [field]: value } : p);
           compute();
         });
@@ -712,27 +702,20 @@ Pick 3 | 1.35 | 50 | 59</textarea>
 
         let label = `Pick ${i + 1}`;
         let odds = '';
-        let confidence = 50;
         let realProb = null;
 
-        if (parts.length === 4) {
+        if (parts.length >= 3) {
           label = parts[0] || label;
           odds = parts[1];
-          confidence = parsePercent(parts[2], 50);
-          realProb = parsePercent(parts[3], 0);
-        } else if (parts.length === 3) {
+          realProb = parsePercent(parts[2], 0);
+        } else if (parts.length === 2) {
           if (/^pick\s*\d+/i.test(parts[0])) {
             label = parts[0] || label;
             odds = parts[1];
-            confidence = parsePercent(parts[2], 50);
           } else {
             odds = parts[0];
-            confidence = parsePercent(parts[1], 50);
-            realProb = parsePercent(parts[2], 0);
+            realProb = parsePercent(parts[1], 0);
           }
-        } else if (parts.length === 2) {
-          odds = parts[0];
-          confidence = parsePercent(parts[1], 50);
         } else if (parts.length === 1) {
           odds = parts[0];
         } else {
@@ -745,7 +728,6 @@ Pick 3 | 1.35 | 50 | 59</textarea>
           id: i + 1,
           label,
           odds,
-          confidence,
           realProb,
         });
       }
@@ -780,14 +762,13 @@ Pick 3 | 1.35 | 50 | 59</textarea>
       objective = 'balanced';
       simulations = 10000;
       activeTab = 'manual';
-      el('batchText').value = 'Pick 1 | 1.28 | 50 | 64\nPick 2 | 1.32 | 50 | 61\nPick 3 | 1.35 | 50 | 59';
+      el('batchText').value = 'Pick 1 | 1.28 | 64\nPick 2 | 1.32 | 61\nPick 3 | 1.35 | 59';
       syncInputs();
       setTab('manual');
       renderPicks();
       compute();
     }
 
-    // events
     el('bankroll').addEventListener('input', (e) => { bankroll = moneyToNumber(e.target.value); e.target.value = formatMoneyInput(e.target.value); compute(); });
     el('stake').addEventListener('input', (e) => { stake = moneyToNumber(e.target.value); e.target.value = formatMoneyInput(e.target.value); compute(); });
     el('edgePct').addEventListener('input', (e) => { edgePct = Number(e.target.value); syncInputs(); compute(); });
@@ -796,7 +777,7 @@ Pick 3 | 1.35 | 50 | 59</textarea>
     el('simulations').addEventListener('input', (e) => { simulations = Math.max(1000, Number(e.target.value || 10000)); compute(); });
     el('addPickBtn').addEventListener('click', () => {
       const nextId = Math.max(0, ...picks.map(p => p.id)) + 1;
-      picks.push({ id: nextId, label: `Pick ${nextId}`, odds: '1.50', confidence: 50, realProb: null });
+      picks.push({ id: nextId, label: `Pick ${nextId}`, odds: '1.50', realProb: null });
       renderPicks();
       compute();
     });
