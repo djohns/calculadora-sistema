@@ -150,6 +150,12 @@
     .top-note { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .chart-bar-wrap { display: grid; gap: 8px; }
     .chart-bar { display: grid; grid-template-columns: 180px 1fr 110px; gap: 10px; align-items: center; }
+    .scenario-row.good { background: rgba(52, 211, 153, 0.08); }
+    .scenario-row.warn { background: rgba(251, 191, 36, 0.08); }
+    .scenario-row.bad { background: rgba(248, 113, 113, 0.08); }
+    .scenario-row.good td:first-child { border-left: 4px solid rgba(52, 211, 153, 0.9); }
+    .scenario-row.warn td:first-child { border-left: 4px solid rgba(251, 191, 36, 0.9); }
+    .scenario-row.bad td:first-child { border-left: 4px solid rgba(248, 113, 113, 0.9); }
     .bar-track {
       position: relative;
       height: 12px;
@@ -266,6 +272,8 @@ Pick 3 | 1.35 | 59</textarea>
 
         <div style="height:14px"></div>
         <div id="riskMessage" class="metric"></div>
+        <div id="explanationBox" class="metric" style="margin-top:12px;"></div>
+        <div id="scenarioBox" class="metric" style="margin-top:12px;"></div>
       </div>
     </div>
 
@@ -427,6 +435,38 @@ Pick 3 | 1.35 | 59</textarea>
       return { avgProfit: profitSum / iterations, profitProb: (positive / iterations) * 100 };
     }
 
+    function buildMissScale(odds, probabilities, groups, totalStake) {
+      const outcomes = enumerateOutcomes(odds.length);
+      const buckets = new Map();
+
+      for (const outcome of outcomes) {
+        const misses = outcome.filter(v => !v).length;
+        const profit = strategyProfitForOutcome(outcome, odds, groups, totalStake);
+        const p = outcomeProbability(outcome, probabilities);
+
+        if (!buckets.has(misses)) {
+          buckets.set(misses, { count: 0, prob: 0, weightedProfit: 0, minProfit: Infinity, maxProfit: -Infinity });
+        }
+
+        const b = buckets.get(misses);
+        b.count += 1;
+        b.prob += p;
+        b.weightedProfit += p * profit;
+        b.minProfit = Math.min(b.minProfit, profit);
+        b.maxProfit = Math.max(b.maxProfit, profit);
+      }
+
+      return Array.from(buckets.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([misses, b]) => ({
+          misses,
+          avgProfit: b.prob > 0 ? b.weightedProfit / b.prob : 0,
+          probability: b.prob,
+          minProfit: b.minProfit,
+          maxProfit: b.maxProfit,
+        }));
+    }
+
     function objectiveWeights(profile) {
       if (profile === 'conservative') return { risk: 1.25, downside: 0.9, complexity: 12 };
       if (profile === 'aggressive') return { risk: 0.45, downside: 0.25, complexity: 8 };
@@ -541,12 +581,16 @@ Pick 3 | 1.35 | 59</textarea>
       const overCap = stake > cap;
       const strategy = best ? strategies.find(s => s.name === best.name) : null;
       const mc = (best && strategy) ? mcEvaluate(odds, probabilities, strategy.groups, stake, simulations) : null;
+      const missScale = (best && strategy) ? buildMissScale(odds, probabilities, strategy.groups, stake) : [];
+      const explanation = best
+        ? `Se recomienda ${best.name} porque, bajo las probabilidades ingresadas, combina mejor rentabilidad esperada con control de varianza. No significa que gane más en todos los casos; significa que, dentro de las estructuras disponibles, es la que mejor equilibra premio potencial y castigo por errores.`
+        : 'Ingresa picks válidos para obtener una recomendación.';
 
-      render(results, best, recommendedStake, cap, overCap, mc, clean.map(p => p.realProb));
+      render(results, best, recommendedStake, cap, overCap, mc, clean.map(p => p.realProb), missScale, explanation);
       saveState();
     }
 
-    function render(results, best, recommendedStake, cap, overCap, mc, realProbs) {
+    function render(results, best, recommendedStake, cap, overCap, mc, realProbs, missScale, explanation) {
       el('edgePctLabel').textContent = `${edgePct}%`;
       el('maxRiskPctLabel').textContent = `${maxRiskPct}%`;
       el('suggestedStake').textContent = best ? formatCLP(recommendedStake) : '—';
@@ -591,6 +635,55 @@ Pick 3 | 1.35 | 59</textarea>
         const avgReal = realProbs.filter(v => Number.isFinite(v)).reduce((a, b) => a + b, 0) / used;
         el('riskMessage').innerHTML += `<div style="margin-top:10px;" class="small">Probabilidad real cargada en ${used} picks. Promedio: ${avgReal.toFixed(1)}%</div>`;
       }
+
+      el('explanationBox').innerHTML = best
+        ? `<div class="label">Por qué esta es la mejor opción</div><div class="value" style="font-size:16px; line-height:1.5;">${explanation}</div>`
+        : `<div class="muted">Sin explicación disponible hasta ingresar picks válidos.</div>`;
+
+      if (best && missScale && missScale.length) {
+        const rows = missScale.map(item => {
+          const worse = item.minProfit < 0 ? 'bad' : 'good';
+          const label = item.misses === 0 ? '0 fallas' : `${item.misses} falla${item.misses > 1 ? 's' : ''}`;
+          const rowClass = item.avgProfit > 0 ? 'scenario-row good' : item.avgProfit < 0 ? 'scenario-row bad' : 'scenario-row warn';
+          const avgClass = item.avgProfit > 0 ? 'ok' : item.avgProfit < 0 ? 'warn' : 'muted';
+          return `
+            <tr class="${rowClass}">
+              <td>${label}</td>
+              <td>${formatPct(item.probability * 100)}</td>
+              <td class="${avgClass}">${formatCLP(item.avgProfit)}</td>
+              <td class="${worse}">${formatCLP(item.minProfit)}</td>
+              <td class="${item.maxProfit >= 0 ? 'ok' : 'warn'}">${formatCLP(item.maxProfit)}</td>
+            </tr>`;
+        }).join('');
+
+        el('scenarioBox').innerHTML = `
+          <div class="label">Escala de ganancia / pérdida según fallas</div>
+          <div class="small" style="margin-top:6px;">Promedio, mínimo y máximo posibles para cada cantidad de picks fallados.</div>
+          <div style="overflow:auto; margin-top:12px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Escenario</th>
+                  <th>Prob. escenario</th>
+                  <th>Profit promedio</th>
+                  <th>Peor caso</th>
+                  <th>Mejor caso</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        el('scenarioBox').innerHTML = `<div class="muted">La escala aparecerá cuando existan picks y una estrategia seleccionada.</div>`;
+      }
+
+      el('mcBox').innerHTML = mc
+        ? `<div class="label">Promedio simulado</div><div class="value">${formatCLP(mc.avgProfit)}</div><div class="small">Prob. de terminar en positivo: ${formatPct(mc.profitProb)}</div>`
+        : `<div class="muted">Simulación no disponible.</div>`;
+
+      const tbody = el('metricsTable');
+      tbody.innerHTML = '';
 
       el('mcBox').innerHTML = mc
         ? `<div class="label">Promedio simulado</div><div class="value">${formatCLP(mc.avgProfit)}</div><div class="small">Prob. de terminar en positivo: ${formatPct(mc.profitProb)}</div>`
