@@ -1,891 +1,204 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulador Betano - Sistemas</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #60a5fa;
-      --good: #34d399;
-      --bad: #f87171;
-      --line: #334155;
-      --chip: #0b1220;
-      --input: #0b1220;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Betano</title>
 
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: linear-gradient(180deg, #0b1120 0%, #111827 100%);
-      color: var(--text);
-      line-height: 1.35;
-    }
+<style>
+body { font-family: Arial; background:#0f172a; color:#fff; padding:20px; }
+input, textarea { width:100%; padding:8px; margin:5px 0; }
+button { padding:10px; margin:5px 5px 5px 0; cursor:pointer; }
 
-    .wrap { max-width: 1440px; margin: 0 auto; padding: 24px; }
-    h1, h2, h3 { margin: 0; }
-    h1 { font-size: 28px; }
-    p { margin: 0; color: var(--muted); }
+.good { color:#22c55e; }
+.warn { color:#f59e0b; }
+.bad { color:#ef4444; }
 
-    .grid { display: grid; gap: 16px; }
-    .grid-2 { grid-template-columns: 1.1fr 0.9fr; }
-    .row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-    .row-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.scenario-row.good { background: rgba(34,197,94,0.1); }
+.scenario-row.warn { background: rgba(245,158,11,0.1); }
+.scenario-row.bad { background: rgba(239,68,68,0.1); }
 
-    .card {
-      background: rgba(17, 24, 39, 0.92);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.2);
-    }
-
-    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
-    .subtle { color: var(--muted); font-size: 14px; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 13px; color: var(--muted); }
-
-    input, textarea, select, button { font: inherit; }
-    input, textarea, select {
-      width: 100%;
-      background: var(--input);
-      border: 1px solid var(--line);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 11px 12px;
-      outline: none;
-    }
-    input:focus, textarea:focus, select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(96,165,250,.15);
-    }
-    textarea { min-height: 160px; resize: vertical; }
-
-    .btns { display: flex; flex-wrap: wrap; gap: 10px; }
-    button {
-      border: 0;
-      border-radius: 12px;
-      padding: 11px 14px;
-      color: #fff;
-      background: var(--accent);
-      cursor: pointer;
-      font-weight: 700;
-    }
-    button.secondary { background: #374151; }
-    button.ghost { background: transparent; border: 1px solid var(--line); }
-    button.danger { background: #b91c1c; }
-    button:hover { filter: brightness(1.05); }
-
-    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
-    .tab {
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--line);
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .tab.active { background: rgba(96,165,250,.16); border-color: rgba(96,165,250,.45); }
-    .hidden { display: none; }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: var(--chip);
-      border: 1px solid var(--line);
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .pill.good { color: #bbf7d0; border-color: rgba(52,211,153,.3); }
-    .pill.bad { color: #fecaca; border-color: rgba(248,113,113,.3); }
-
-    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 16px; }
-    th, td {
-      border-bottom: 1px solid var(--line);
-      padding: 10px 8px;
-      text-align: left;
-      vertical-align: top;
-      font-size: 13px;
-    }
-    th { color: #cbd5e1; background: rgba(255,255,255,.02); position: sticky; top: 0; }
-    tr.highlight { background: rgba(96,165,250,.08); }
-
-    .muted { color: var(--muted); }
-    .big { font-size: 22px; font-weight: 800; }
-    .small { font-size: 12px; color: var(--muted); }
-    .warn { color: #fca5a5; }
-    .ok { color: #86efac; }
-
-    .list { display: grid; gap: 10px; }
-    .pick-row {
-      display: grid;
-      grid-template-columns: 1.1fr .8fr .9fr auto;
-      gap: 10px;
-      align-items: end;
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(255,255,255,.02);
-    }
-
-    .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .metric {
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.02);
-    }
-    .metric .label { font-size: 12px; color: var(--muted); }
-    .metric .value { font-size: 20px; font-weight: 800; margin-top: 4px; }
-
-    .top-note { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .chart-bar-wrap { display: grid; gap: 8px; }
-    .chart-bar { display: grid; grid-template-columns: 180px 1fr 110px; gap: 10px; align-items: center; }
-    .scenario-row.good { background: rgba(52, 211, 153, 0.08); }
-    .scenario-row.warn { background: rgba(251, 191, 36, 0.08); }
-    .scenario-row.bad { background: rgba(248, 113, 113, 0.08); }
-    .scenario-row.good td:first-child { border-left: 4px solid rgba(52, 211, 153, 0.9); }
-    .scenario-row.warn td:first-child { border-left: 4px solid rgba(251, 191, 36, 0.9); }
-    .scenario-row.bad td:first-child { border-left: 4px solid rgba(248, 113, 113, 0.9); }
-    .bar-track {
-      position: relative;
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.06);
-    }
-    .bar-fill {
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, rgba(96,165,250,.95), rgba(52,211,153,.95));
-    }
-
-    @media (max-width: 1100px) {
-      .grid-2, .row, .row-3, .metric-grid { grid-template-columns: 1fr; }
-      .pick-row { grid-template-columns: 1fr; }
-      .chart-bar { grid-template-columns: 1fr; }
-    }
-  </style>
+table { width:100%; margin-top:10px; border-collapse:collapse; }
+td, th { padding:8px; border-bottom:1px solid #333; }
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="grid grid-2">
-      <div class="card">
-        <h1>Simulador avanzado de apuestas de sistema</h1>
-        <p class="subtle" style="margin-top:8px;">
-          Evalúa solo sistemas de Betano con EV, riesgo, Kelly fraccional y simulación Monte Carlo.
-        </p>
 
-        <div class="row" style="margin-top:16px;">
-          <div class="field">
-            <label>Banca</label>
-            <input id="bankroll" inputmode="numeric" />
-          </div>
-          <div class="field">
-            <label>Monto a invertir</label>
-            <input id="stake" inputmode="numeric" />
-          </div>
-          <div class="field">
-            <label>Edge global estimado (%)</label>
-            <input id="edgePct" type="range" min="-20" max="20" step="1" />
-            <div class="small"><span id="edgePctLabel"></span></div>
-          </div>
-          <div class="field">
-            <label>Límite máximo de riesgo (%)</label>
-            <input id="maxRiskPct" type="range" min="1" max="20" step="1" />
-            <div class="small"><span id="maxRiskPctLabel"></span></div>
-          </div>
-        </div>
+<h2>Simulador Apuestas Sistema</h2>
 
-        <div class="row-3" style="margin-top:14px;">
-          <div class="field">
-            <label>Perfil de decisión</label>
-            <select id="objective">
-              <option value="conservative">Conservador</option>
-              <option value="balanced" selected>Balanceado</option>
-              <option value="aggressive">Agresivo</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Simulaciones Monte Carlo</label>
-            <input id="simulations" type="number" min="1000" step="1000" />
-          </div>
-          <div class="field">
-            <label>Acciones</label>
-            <div class="btns">
-              <button id="addPickBtn" type="button">Agregar pick</button>
-              <button id="clearAllBtn" type="button" class="danger">Limpiar todo</button>
-              <button id="restoreExampleBtn" type="button" class="secondary">Ejemplo</button>
-            </div>
-          </div>
-        </div>
+<label>Banca</label>
+<input id="bankroll">
 
-        <div class="tabs" style="margin-top:16px;">
-          <button class="tab active" id="tabManual" type="button">Manual</button>
-          <button class="tab" id="tabBatch" type="button">Pega cuotas</button>
-        </div>
+<label>Stake</label>
+<input id="stake">
 
-        <div id="panelManual">
-          <div id="pickList" class="list"></div>
-        </div>
-
-        <div id="panelBatch" class="hidden">
-          <div class="field">
-            <label>Formato recomendado: Pick 1 | 1.28 | 64</label>
-            <textarea id="batchText">Pick 1 | 1.28 | 64
+<label>Pega picks</label>
+<textarea id="batch">
+Pick 1 | 1.28 | 64
 Pick 2 | 1.32 | 61
-Pick 3 | 1.35 | 59</textarea>
-          </div>
-          <div class="btns" style="margin-top:10px;">
-            <button id="loadBatchBtn" type="button">Cargar picks</button>
-            <button id="clearBatchBtn" type="button" class="danger">Limpiar pegado</button>
-          </div>
-          <p class="small" style="margin-top:8px;">
-            Formatos soportados: <b>Pick 1 | cuota | probabilidad real</b>, <b>cuota | probabilidad real</b> o solo <b>cuota</b>.
-          </p>
-        </div>
-      </div>
+Pick 3 | 1.35 | 59
+</textarea>
 
-      <div class="card">
-        <h2 class="section-title">Recomendación automática</h2>
-        <div id="recommendationBox" class="metric"></div>
-        <div class="top-note" id="topNote"></div>
+<button id="load">Cargar</button>
+<button id="clear">Limpiar</button>
 
-        <div style="height:14px"></div>
-        <h2 class="section-title">Señales clave</h2>
-        <div class="metric-grid">
-          <div class="metric"><div class="label">Stake sugerido</div><div class="value" id="suggestedStake">—</div></div>
-          <div class="metric"><div class="label">Tu stake actual</div><div class="value" id="currentStake">—</div></div>
-          <div class="metric"><div class="label">Profit esperado</div><div class="value" id="bestEv">—</div></div>
-          <div class="metric"><div class="label">ROI esperado</div><div class="value" id="bestRoi">—</div></div>
-        </div>
+<div id="resultado"></div>
+<div id="escenarios"></div>
 
-        <div style="height:14px"></div>
-        <div id="riskMessage" class="metric"></div>
-        <div id="explanationBox" class="metric" style="margin-top:12px;"></div>
-        <div id="scenarioBox" class="metric" style="margin-top:12px;"></div>
-      </div>
-    </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
-    <div class="grid grid-2" style="margin-top:16px;">
-      <div class="card">
-        <h2 class="section-title">Comparación completa</h2>
-        <div class="small">Ordenada por score según tu perfil de riesgo. No incluye apuestas simples.</div>
-        <div style="overflow:auto; margin-top:12px; max-height: 680px;">
-          <table>
-            <thead>
-              <tr>
-                <th>Estrategia</th>
-                <th>Bets</th>
-                <th>EV</th>
-                <th>ROI</th>
-                <th>Riesgo σ</th>
-                <th>Pérdida</th>
-                <th>Kelly</th>
-              </tr>
-            </thead>
-            <tbody id="metricsTable"></tbody>
-          </table>
-        </div>
-      </div>
+let picks = [];
 
-      <div class="card">
-        <h2 class="section-title">Simulación Monte Carlo</h2>
-        <div class="small">Se muestra el promedio simulado de la estrategia mejor rankeada.</div>
-        <div id="mcBox" class="metric" style="margin-top:12px;"></div>
-        <div style="height:14px"></div>
-        <div id="chartBox" class="chart-bar-wrap"></div>
-      </div>
-    </div>
-  </div>
+function parse() {
+  const lines = document.getElementById("batch").value.split("\n");
+  picks = lines.map(l => {
+    const p = l.split("|").map(x=>x.trim());
+    return {
+      label: p[0],
+      odd: parseFloat(p[1]),
+      prob: parseFloat(p[2]) / 100
+    };
+  }).filter(p => p.odd && p.prob);
+}
 
-  <script>
-    const STORAGE_KEY = 'betano_system_simulator_v4';
-
-    const DEFAULT_PICKS = [
-      { id: 1, label: 'Pick 1', odds: '1.28', realProb: 64 },
-      { id: 2, label: 'Pick 2', odds: '1.32', realProb: 61 },
-      { id: 3, label: 'Pick 3', odds: '1.35', realProb: 59 },
-    ];
-
-    let picks = structuredClone(DEFAULT_PICKS);
-    let bankroll = 300000;
-    let stake = 30000;
-    let edgePct = 0;
-    let maxRiskPct = 10;
-    let objective = 'balanced';
-    let simulations = 10000;
-    let activeTab = 'manual';
-
-    const el = (id) => document.getElementById(id);
-
-    function formatCLP(value) {
-      return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Number.isFinite(value) ? value : 0);
+function combinations(arr, k) {
+  const res = [];
+  function helper(start, comb) {
+    if (comb.length === k) return res.push([...comb]);
+    for (let i = start; i < arr.length; i++) {
+      comb.push(arr[i]);
+      helper(i+1, comb);
+      comb.pop();
     }
+  }
+  helper(0, []);
+  return res;
+}
 
-    function formatPct(value) { return `${value.toFixed(1)}%`; }
-    function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+function product(arr) {
+  return arr.reduce((a,b)=>a*b,1);
+}
 
-    function parseOdds(raw) {
-      const n = Number(String(raw).replace(',', '.').trim());
-      return Number.isFinite(n) && n > 1 ? n : null;
-    }
+function calc() {
+  if (!picks.length) return;
 
-    function parsePercent(raw, fallback = 50) {
-      const n = Number(String(raw).replace(',', '.').replace(/[^0-9.-]/g, ''));
-      return clamp(Number.isFinite(n) ? n : fallback, 0, 100);
-    }
+  const odds = picks.map(p=>p.odd);
+  const probs = picks.map(p=>p.prob);
+  const stake = parseFloat(document.getElementById("stake").value) || 0;
 
-    function formatMoneyInput(raw) {
-      const digits = String(raw).replace(/[^\d]/g, '');
-      if (!digits) return '';
-      return new Intl.NumberFormat('es-CL').format(Number(digits));
-    }
+  const combos = combinations([0,1,2],2).concat(combinations([0,1,2],3));
 
-    function moneyToNumber(raw) {
-      const digits = String(raw).replace(/[^\d]/g, '');
-      return digits ? Number(digits) : 0;
-    }
+  let bestEV = -Infinity;
+  let best = null;
 
-    function combinations(arr, k) {
-      const out = [];
-      const helper = (start, path) => {
-        if (path.length === k) { out.push([...path]); return; }
-        for (let i = start; i < arr.length; i++) {
-          path.push(arr[i]); helper(i + 1, path); path.pop();
-        }
-      };
-      if (k >= 1 && k <= arr.length) helper(0, []);
-      return out;
-    }
+  const outcomes = 1 << picks.length;
 
-    function product(nums) { return nums.reduce((acc, n) => acc * n, 1); }
+  for (let s of [combos]) {
 
-    function buildStrategies(n) {
-      const idx = Array.from({ length: n }, (_, i) => i);
-      const s = [];
-      if (n >= 2) s.push({ id: 'doubles', name: 'Dobles', desc: 'Todas las combinaciones de 2 picks.', groups: combinations(idx, 2) });
-      if (n >= 3) s.push({ id: 'triples', name: 'Triples', desc: 'Todas las combinaciones de 3 picks.', groups: combinations(idx, 3) });
-      if (n >= 4) s.push({ id: 'quads', name: 'Cuádruples', desc: 'Todas las combinaciones de 4 picks.', groups: combinations(idx, 4) });
-      if (n === 3) {
-        s.push({ id: 'trixie', name: 'Trixie', desc: '3 dobles + 1 triple.', groups: [...combinations(idx, 2), ...combinations(idx, 3)] });
-        s.push({ id: 'patent', name: 'Patent', desc: '3 simples + 3 dobles + 1 triple.', groups: [...combinations(idx, 1), ...combinations(idx, 2), ...combinations(idx, 3)] });
-      }
-      if (n === 4) {
-        s.push({ id: 'yankee', name: 'Yankee', desc: '6 dobles + 4 triples + 1 cuádruple.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4)] });
-        s.push({ id: 'lucky15', name: 'Lucky 15', desc: '4 simples + 6 dobles + 4 triples + 1 cuádruple.', groups: [...combinations(idx, 1), ...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4)] });
-      }
-      if (n === 5) {
-        s.push({ id: 'canadian', name: 'Canadian', desc: '10 dobles + 10 triples + 5 cuádruples + 1 quíntuple.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5)] });
-        s.push({ id: 'lucky31', name: 'Lucky 31', desc: '5 simples + 10 dobles + 10 triples + 5 cuádruples + 1 quíntuple.', groups: [...combinations(idx, 1), ...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5)] });
-      }
-      if (n === 6) s.push({ id: 'heinz', name: 'Heinz', desc: '15 dobles + 20 triples + 15 cuádruples + 6 quíntuples + 1 séxtuple.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5), ...combinations(idx, 6)] });
-      if (n === 7) s.push({ id: 'superHeinz', name: 'Super Heinz', desc: 'Cobertura muy amplia para 7 picks.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5), ...combinations(idx, 6), ...combinations(idx, 7)] });
-      if (n === 8) s.push({ id: 'goliath', name: 'Goliath', desc: 'Máxima cobertura clásica.', groups: [...combinations(idx, 2), ...combinations(idx, 3), ...combinations(idx, 4), ...combinations(idx, 5), ...combinations(idx, 6), ...combinations(idx, 7), ...combinations(idx, 8)] });
-      return s;
-    }
+    let EV = 0;
 
-    function impliedProbability(odd) {
-      return 1 / odd;
-    }
+    for (let i=0;i<outcomes;i++) {
 
-    function modelProbability(pick, odd) {
-      if (Number.isFinite(pick.realProb) && pick.realProb > 0) return clamp(pick.realProb / 100, 0.01, 0.99);
-      const base = impliedProbability(odd);
-      const edgeMultiplier = 1 + edgePct / 100;
-      return clamp(base * edgeMultiplier, 0.01, 0.99);
-    }
-
-    function outcomeProbability(outcome, probabilities) {
-      let p = 1;
-      for (let i = 0; i < outcome.length; i++) p *= outcome[i] ? probabilities[i] : (1 - probabilities[i]);
-      return p;
-    }
-
-    function strategyProfitForOutcome(outcome, odds, groups, totalStake) {
-      const unit = totalStake / groups.length;
+      let prob = 1;
       let profit = 0;
-      for (const group of groups) {
-        const win = group.every(i => outcome[i]);
-        if (win) profit += unit * (product(group.map(i => odds[i])) - 1);
-        else profit -= unit;
-      }
-      return profit;
-    }
 
-    function mcEvaluate(odds, probabilities, groups, totalStake, iterations) {
-      let profitSum = 0;
-      let positive = 0;
-      for (let t = 0; t < iterations; t++) {
-        const outcome = probabilities.map(p => Math.random() < p);
-        const profit = strategyProfitForOutcome(outcome, odds, groups, totalStake);
-        profitSum += profit;
-        if (profit > 0) positive += 1;
-      }
-      return { avgProfit: profitSum / iterations, profitProb: (positive / iterations) * 100 };
-    }
+      let result = [];
 
-    function buildMissScale(odds, probabilities, groups, totalStake) {
-      const outcomes = enumerateOutcomes(odds.length);
-      const buckets = new Map();
-
-      for (const outcome of outcomes) {
-        const misses = outcome.filter(v => !v).length;
-        const profit = strategyProfitForOutcome(outcome, odds, groups, totalStake);
-        const p = outcomeProbability(outcome, probabilities);
-
-        if (!buckets.has(misses)) {
-          buckets.set(misses, { count: 0, prob: 0, weightedProfit: 0, minProfit: Infinity, maxProfit: -Infinity });
-        }
-
-        const b = buckets.get(misses);
-        b.count += 1;
-        b.prob += p;
-        b.weightedProfit += p * profit;
-        b.minProfit = Math.min(b.minProfit, profit);
-        b.maxProfit = Math.max(b.maxProfit, profit);
+      for (let j=0;j<picks.length;j++) {
+        const win = i & (1<<j);
+        result.push(win);
+        prob *= win ? probs[j] : (1-probs[j]);
       }
 
-      return Array.from(buckets.entries())
-        .sort((a, b) => a[0] - b[0])
-        .map(([misses, b]) => ({
-          misses,
-          avgProfit: b.prob > 0 ? b.weightedProfit / b.prob : 0,
-          probability: b.prob,
-          minProfit: b.minProfit,
-          maxProfit: b.maxProfit,
-        }));
-    }
-
-    function objectiveWeights(profile) {
-      if (profile === 'conservative') return { risk: 1.25, downside: 0.9, complexity: 12 };
-      if (profile === 'aggressive') return { risk: 0.45, downside: 0.25, complexity: 8 };
-      return { risk: 0.8, downside: 0.5, complexity: 10 };
-    }
-
-    function saveState() {
-      const payload = { picks, bankroll, stake, edgePct, maxRiskPct, objective, simulations, activeTab };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    }
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return false;
-        const data = JSON.parse(raw);
-        if (Array.isArray(data.picks)) picks = data.picks;
-        if (Number.isFinite(data.bankroll)) bankroll = data.bankroll;
-        if (Number.isFinite(data.stake)) stake = data.stake;
-        if (Number.isFinite(data.edgePct)) edgePct = data.edgePct;
-        if (Number.isFinite(data.maxRiskPct)) maxRiskPct = data.maxRiskPct;
-        if (typeof data.objective === 'string') objective = data.objective;
-        if (Number.isFinite(data.simulations)) simulations = data.simulations;
-        if (typeof data.activeTab === 'string') activeTab = data.activeTab;
-        return true;
-      } catch {
-        return false;
-      }
-    }
-
-    function enumerateOutcomes(n) {
-      const total = 1 << n;
-      const list = [];
-      for (let mask = 0; mask < total; mask++) {
-        const arr = [];
-        for (let i = 0; i < n; i++) arr.push(Boolean(mask & (1 << i)));
-        list.push(arr);
-      }
-      return list;
-    }
-
-    function compute() {
-      const clean = picks
-        .map(p => ({
-          ...p,
-          odd: parseOdds(p.odds),
-          realProb: Number.isFinite(Number(p.realProb)) ? clamp(Number(p.realProb), 0, 100) : null,
-        }))
-        .filter(p => p.odd !== null);
-
-      const odds = clean.map(p => p.odd);
-      const probabilities = clean.map(p => modelProbability(p, p.odd));
-      const strategies = buildStrategies(odds.length);
-      const outcomes = enumerateOutcomes(odds.length);
-      const w = objectiveWeights(objective);
-      const results = [];
-
-      for (const s of strategies) {
-        const totalStake = stake;
-        let expectedProfit = 0;
-        let expectedSq = 0;
-        let lossProb = 0;
-        let profitProb = 0;
-        let minProfit = Infinity;
-        let maxProfit = -Infinity;
-
-        for (const outcome of outcomes) {
-          const p = outcomeProbability(outcome, probabilities);
-          const profit = strategyProfitForOutcome(outcome, odds, s.groups, totalStake);
-          expectedProfit += p * profit;
-          expectedSq += p * profit * profit;
-          if (profit < 0) lossProb += p;
-          if (profit > 0) profitProb += p;
-          minProfit = Math.min(minProfit, profit);
-          maxProfit = Math.max(maxProfit, profit);
-        }
-
-        const variance = Math.max(0, expectedSq - expectedProfit * expectedProfit);
-        const stdev = Math.sqrt(variance);
-        const roi = totalStake > 0 ? expectedProfit / totalStake : 0;
-        const roiVariance = totalStake > 0 ? variance / (totalStake * totalStake) : 0;
-        const rawKelly = roiVariance > 0 ? Math.max(0, roi / roiVariance) : 0;
-        const kellyFraction = clamp(rawKelly, 0, maxRiskPct / 100);
-        const fractionalKelly = kellyFraction * 0.25;
-        const suggestedStake = bankroll * fractionalKelly;
-        const score = expectedProfit - w.risk * stdev - w.downside * lossProb * totalStake - w.complexity * s.groups.length;
-
-        results.push({
-          id: s.id,
-          name: s.name,
-          description: s.desc,
-          bets: s.groups.length,
-          unitStake: totalStake / s.groups.length,
-          expectedProfit,
-          expectedReturn: totalStake + expectedProfit,
-          roi,
-          stdev,
-          lossProb,
-          profitProb,
-          minProfit,
-          maxProfit,
-          kellyFraction,
-          suggestedStake,
-          score,
-        });
+      for (let c of s) {
+        const win = c.every(i=>result[i]);
+        if (win) profit += stake/s.length * (product(c.map(i=>odds[i]))-1);
+        else profit -= stake/s.length;
       }
 
-      results.sort((a, b) => b.score - a.score);
-      const best = results[0] || null;
-      const cap = bankroll * (maxRiskPct / 100);
-      const recommendedStake = best ? Math.min(stake, best.suggestedStake, cap) : 0;
-      const overCap = stake > cap;
-      const strategy = best ? strategies.find(s => s.name === best.name) : null;
-      const mc = (best && strategy) ? mcEvaluate(odds, probabilities, strategy.groups, stake, simulations) : null;
-      const missScale = (best && strategy) ? buildMissScale(odds, probabilities, strategy.groups, stake) : [];
-      const explanation = best
-        ? `Se recomienda ${best.name} porque, bajo las probabilidades ingresadas, combina mejor rentabilidad esperada con control de varianza. No significa que gane más en todos los casos; significa que, dentro de las estructuras disponibles, es la que mejor equilibra premio potencial y castigo por errores.`
-        : 'Ingresa picks válidos para obtener una recomendación.';
-
-      render(results, best, recommendedStake, cap, overCap, mc, clean.map(p => p.realProb), missScale, explanation);
-      saveState();
+      EV += prob * profit;
     }
 
-    function render(results, best, recommendedStake, cap, overCap, mc, realProbs, missScale, explanation) {
-      el('edgePctLabel').textContent = `${edgePct}%`;
-      el('maxRiskPctLabel').textContent = `${maxRiskPct}%`;
-      el('suggestedStake').textContent = best ? formatCLP(recommendedStake) : '—';
-      el('currentStake').textContent = formatCLP(stake);
-      el('bestEv').textContent = best ? formatCLP(best.expectedProfit) : '—';
-      el('bestRoi').textContent = best ? formatPct(best.roi * 100) : '—';
+    if (EV > bestEV) {
+      bestEV = EV;
+      best = s;
+    }
+  }
 
-      const bestBox = el('recommendationBox');
-      if (!best) {
-        bestBox.innerHTML = `<div class="muted">Ingresa al menos un pick válido.</div>`;
-      } else {
-        bestBox.innerHTML = `
-          <div class="pill good">Mejor opción</div>
-          <div class="big" style="margin-top:8px;">${best.name}</div>
-          <div style="margin-top:8px; color: var(--muted); font-size: 14px;">${best.description}</div>
-        `;
-      }
+  document.getElementById("resultado").innerHTML =
+    `<h3>EV esperado: ${bestEV.toFixed(0)}</h3>`;
 
-      const topNote = el('topNote');
-      topNote.innerHTML = '';
-      if (best) {
-        const notes = [
-          `EV: ${formatCLP(best.expectedProfit)}`,
-          `Riesgo σ: ${formatCLP(best.stdev)}`,
-          `Prob. positiva: ${formatPct(best.profitProb)}`,
-          `Kelly: ${formatPct(best.kellyFraction * 100)}`,
-        ];
-        for (const note of notes) {
-          const span = document.createElement('div');
-          span.className = 'pill';
-          span.textContent = note;
-          topNote.appendChild(span);
-        }
-      }
+  buildScale(best, odds, probs, stake);
+}
 
-      el('riskMessage').innerHTML = overCap
-        ? `<div class="pill bad">El stake supera el límite de riesgo sobre banca.</div><div style="margin-top:8px;" class="warn">Cap permitido: ${formatCLP(cap)}</div>`
-        : `<div class="pill good">El stake está dentro del límite de riesgo.</div><div style="margin-top:8px;" class="ok">Cap permitido: ${formatCLP(cap)}</div>`;
+function buildScale(groups, odds, probs, stake) {
 
-      if (realProbs && realProbs.some(v => Number.isFinite(v))) {
-        const used = realProbs.filter(v => Number.isFinite(v)).length;
-        const avgReal = realProbs.filter(v => Number.isFinite(v)).reduce((a, b) => a + b, 0) / used;
-        el('riskMessage').innerHTML += `<div style="margin-top:10px;" class="small">Probabilidad real cargada en ${used} picks. Promedio: ${avgReal.toFixed(1)}%</div>`;
-      }
+  const outcomes = 1 << odds.length;
+  const map = {};
 
-      el('explanationBox').innerHTML = best
-        ? `<div class="label">Por qué esta es la mejor opción</div><div class="value" style="font-size:16px; line-height:1.5;">${explanation}</div>`
-        : `<div class="muted">Sin explicación disponible hasta ingresar picks válidos.</div>`;
+  for (let i=0;i<outcomes;i++) {
 
-      if (best && missScale && missScale.length) {
-        const rows = missScale.map(item => {
-          const worse = item.minProfit < 0 ? 'bad' : 'good';
-          const label = item.misses === 0 ? '0 fallas' : `${item.misses} falla${item.misses > 1 ? 's' : ''}`;
-          const rowClass = item.avgProfit > 0 ? 'scenario-row good' : item.avgProfit < 0 ? 'scenario-row bad' : 'scenario-row warn';
-          const avgClass = item.avgProfit > 0 ? 'ok' : item.avgProfit < 0 ? 'warn' : 'muted';
-          return `
-            <tr class="${rowClass}">
-              <td>${label}</td>
-              <td>${formatPct(item.probability * 100)}</td>
-              <td class="${avgClass}">${formatCLP(item.avgProfit)}</td>
-              <td class="${worse}">${formatCLP(item.minProfit)}</td>
-              <td class="${item.maxProfit >= 0 ? 'ok' : 'warn'}">${formatCLP(item.maxProfit)}</td>
-            </tr>`;
-        }).join('');
+    let misses = 0;
+    let prob = 1;
+    let profit = 0;
 
-        el('scenarioBox').innerHTML = `
-          <div class="label">Escala de ganancia / pérdida según fallas</div>
-          <div class="small" style="margin-top:6px;">Promedio, mínimo y máximo posibles para cada cantidad de picks fallados.</div>
-          <div style="overflow:auto; margin-top:12px;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Escenario</th>
-                  <th>Prob. escenario</th>
-                  <th>Profit promedio</th>
-                  <th>Peor caso</th>
-                  <th>Mejor caso</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-          </div>
-        `;
-      } else {
-        el('scenarioBox').innerHTML = `<div class="muted">La escala aparecerá cuando existan picks y una estrategia seleccionada.</div>`;
-      }
+    let result = [];
 
-      el('mcBox').innerHTML = mc
-        ? `<div class="label">Promedio simulado</div><div class="value">${formatCLP(mc.avgProfit)}</div><div class="small">Prob. de terminar en positivo: ${formatPct(mc.profitProb)}</div>`
-        : `<div class="muted">Simulación no disponible.</div>`;
-
-      const tbody = el('metricsTable');
-      tbody.innerHTML = '';
-
-      el('mcBox').innerHTML = mc
-        ? `<div class="label">Promedio simulado</div><div class="value">${formatCLP(mc.avgProfit)}</div><div class="small">Prob. de terminar en positivo: ${formatPct(mc.profitProb)}</div>`
-        : `<div class="muted">Simulación no disponible.</div>`;
-
-      const tbody = el('metricsTable');
-      tbody.innerHTML = '';
-      results.forEach((r, idx) => {
-        const tr = document.createElement('tr');
-        if (idx === 0) tr.className = 'highlight';
-        tr.innerHTML = `
-          <td><strong>${r.name}</strong><div class="small">${r.description}</div></td>
-          <td>${r.bets}</td>
-          <td>${formatCLP(r.expectedProfit)}</td>
-          <td>${formatPct(r.roi * 100)}</td>
-          <td>${formatCLP(r.stdev)}</td>
-          <td>${formatPct(r.lossProb * 100)}</td>
-          <td>${formatPct(r.kellyFraction * 100)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      const maxEv = Math.max(...results.map(r => Math.abs(r.expectedProfit)), 1);
-      const chart = el('chartBox');
-      chart.innerHTML = '';
-      results.slice(0, Math.min(results.length, 8)).forEach(r => {
-        const row = document.createElement('div');
-        row.className = 'chart-bar';
-        const width = Math.max(0, Math.min(100, (Math.abs(r.expectedProfit) / maxEv) * 100));
-        row.innerHTML = `
-          <div><strong>${r.name}</strong></div>
-          <div class="bar-track"><div class="bar-fill" style="width:${width}%;"></div></div>
-          <div style="text-align:right;">${formatCLP(r.expectedProfit)}</div>
-        `;
-        chart.appendChild(row);
-      });
+    for (let j=0;j<odds.length;j++) {
+      const win = i & (1<<j);
+      result.push(win);
+      if (!win) misses++;
+      prob *= win ? probs[j] : (1-probs[j]);
     }
 
-    function renderPicks() {
-      const list = el('pickList');
-      list.innerHTML = '';
-
-      if (!picks.length) {
-        list.innerHTML = `<div class="metric"><div class="muted">No hay picks cargados. Agrega uno o pega cuotas para comenzar desde cero.</div></div>`;
-        return;
-      }
-
-      picks.forEach(p => {
-        const row = document.createElement('div');
-        row.className = 'pick-row';
-        row.innerHTML = `
-          <div class="field">
-            <label>Nombre del pick</label>
-            <input data-id="${p.id}" data-field="label" value="${String(p.label || '')}" />
-          </div>
-          <div class="field">
-            <label>Cuota</label>
-            <input data-id="${p.id}" data-field="odds" value="${String(p.odds || '')}" />
-          </div>
-          <div class="field">
-            <label>Probabilidad real (%)</label>
-            <input data-id="${p.id}" data-field="realProb" type="number" min="0" max="100" placeholder="Auto" value="${Number.isFinite(Number(p.realProb)) ? p.realProb : ''}" />
-          </div>
-          <div>
-            <button class="ghost" type="button" data-remove="${p.id}">Eliminar</button>
-          </div>
-        `;
-        list.appendChild(row);
-      });
-
-      list.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', (e) => {
-          const id = Number(e.target.dataset.id);
-          const field = e.target.dataset.field;
-          const value = field === 'realProb' ? (e.target.value === '' ? null : Number(e.target.value)) : e.target.value;
-          picks = picks.map(p => p.id === id ? { ...p, [field]: value } : p);
-          compute();
-        });
-      });
-
-      list.querySelectorAll('[data-remove]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const id = Number(e.currentTarget.dataset.remove);
-          picks = picks.filter(p => p.id !== id);
-          renderPicks();
-          compute();
-        });
-      });
+    for (let g of groups) {
+      const win = g.every(i=>result[i]);
+      if (win) profit += stake/groups.length * (product(g.map(i=>odds[i]))-1);
+      else profit -= stake/groups.length;
     }
 
-    function syncInputs() {
-      el('bankroll').value = formatMoneyInput(String(bankroll));
-      el('stake').value = formatMoneyInput(String(stake));
-      el('edgePct').value = edgePct;
-      el('maxRiskPct').value = maxRiskPct;
-      el('objective').value = objective;
-      el('simulations').value = simulations;
-      el('edgePctLabel').textContent = `${edgePct}%`;
-      el('maxRiskPctLabel').textContent = `${maxRiskPct}%`;
-    }
+    if (!map[misses]) map[misses] = {prob:0, profit:0};
+    map[misses].prob += prob;
+    map[misses].profit += prob * profit;
+  }
 
-    function loadBatch() {
-      const lines = el('batchText').value.split(/\n+/).map(x => x.trim()).filter(Boolean);
-      const next = [];
+  let html = "<table><tr><th>Escenario</th><th>Prob</th><th>Profit</th></tr>";
 
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const parts = line.split('|').map(x => x.trim()).filter(Boolean);
+  Object.keys(map).sort((a,b)=>a-b).forEach(m => {
 
-        let label = `Pick ${i + 1}`;
-        let odds = '';
-        let realProb = null;
+    const avg = map[m].profit / map[m].prob;
 
-        if (parts.length >= 3) {
-          label = parts[0] || label;
-          odds = parts[1];
-          realProb = parsePercent(parts[2], 0);
-        } else if (parts.length === 2) {
-          if (/^pick\s*\d+/i.test(parts[0])) {
-            label = parts[0] || label;
-            odds = parts[1];
-          } else {
-            odds = parts[0];
-            realProb = parsePercent(parts[1], 0);
-          }
-        } else if (parts.length === 1) {
-          odds = parts[0];
-        } else {
-          continue;
-        }
+    let cls = "warn";
+    if (avg > 0) cls = "good";
+    if (avg < 0) cls = "bad";
 
-        odds = String(odds).replace(/[^0-9.,]/g, '').trim();
+    html += `<tr class="scenario-row ${cls}">
+      <td>${m} fallas</td>
+      <td>${(map[m].prob*100).toFixed(1)}%</td>
+      <td>${avg.toFixed(0)}</td>
+    </tr>`;
+  });
 
-        next.push({
-          id: i + 1,
-          label,
-          odds,
-          realProb,
-        });
-      }
+  html += "</table>";
 
-      picks = next;
-      renderPicks();
-      compute();
-    }
+  document.getElementById("escenarios").innerHTML = html;
+}
 
-    function setTab(tab) {
-      activeTab = tab;
-      el('tabManual').classList.toggle('active', tab === 'manual');
-      el('tabBatch').classList.toggle('active', tab === 'batch');
-      el('panelManual').classList.toggle('hidden', tab !== 'manual');
-      el('panelBatch').classList.toggle('hidden', tab !== 'batch');
-      saveState();
-    }
+document.getElementById("load").onclick = () => {
+  parse();
+  calc();
+};
 
-    function clearAll() {
-      picks = [];
-      localStorage.removeItem(STORAGE_KEY);
-      renderPicks();
-      compute();
-    }
+document.getElementById("clear").onclick = () => {
+  document.getElementById("batch").value = "";
+  document.getElementById("resultado").innerHTML = "";
+  document.getElementById("escenarios").innerHTML = "";
+};
 
-    function restoreExample() {
-      picks = structuredClone(DEFAULT_PICKS);
-      bankroll = 300000;
-      stake = 30000;
-      edgePct = 0;
-      maxRiskPct = 10;
-      objective = 'balanced';
-      simulations = 10000;
-      activeTab = 'manual';
-      el('batchText').value = 'Pick 1 | 1.28 | 64\nPick 2 | 1.32 | 61\nPick 3 | 1.35 | 59';
-      syncInputs();
-      setTab('manual');
-      renderPicks();
-      compute();
-    }
+});
+</script>
 
-    el('bankroll').addEventListener('input', (e) => { bankroll = moneyToNumber(e.target.value); e.target.value = formatMoneyInput(e.target.value); compute(); });
-    el('stake').addEventListener('input', (e) => { stake = moneyToNumber(e.target.value); e.target.value = formatMoneyInput(e.target.value); compute(); });
-    el('edgePct').addEventListener('input', (e) => { edgePct = Number(e.target.value); syncInputs(); compute(); });
-    el('maxRiskPct').addEventListener('input', (e) => { maxRiskPct = Number(e.target.value); syncInputs(); compute(); });
-    el('objective').addEventListener('change', (e) => { objective = e.target.value; compute(); });
-    el('simulations').addEventListener('input', (e) => { simulations = Math.max(1000, Number(e.target.value || 10000)); compute(); });
-    el('addPickBtn').addEventListener('click', () => {
-      const nextId = Math.max(0, ...picks.map(p => p.id)) + 1;
-      picks.push({ id: nextId, label: `Pick ${nextId}`, odds: '1.50', realProb: null });
-      renderPicks();
-      compute();
-    });
-    el('clearAllBtn').addEventListener('click', clearAll);
-    el('restoreExampleBtn').addEventListener('click', restoreExample);
-    el('loadBatchBtn').addEventListener('click', loadBatch);
-    el('clearBatchBtn').addEventListener('click', () => { el('batchText').value = ''; });
-    el('tabManual').addEventListener('click', () => setTab('manual'));
-    el('tabBatch').addEventListener('click', () => setTab('batch'));
-
-    const loaded = loadState();
-    syncInputs();
-    renderPicks();
-    setTab(activeTab);
-    compute();
-  </script>
 </body>
 </html>
