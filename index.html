@@ -8,7 +8,6 @@
     :root {
       --bg: #0f172a;
       --panel: #111827;
-      --panel2: #1f2937;
       --text: #e5e7eb;
       --muted: #9ca3af;
       --accent: #60a5fa;
@@ -28,19 +27,15 @@
       line-height: 1.35;
     }
 
-    .wrap {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-
+    .wrap { max-width: 1440px; margin: 0 auto; padding: 24px; }
     h1, h2, h3 { margin: 0; }
     h1 { font-size: 28px; }
     p { margin: 0; color: var(--muted); }
 
     .grid { display: grid; gap: 16px; }
     .grid-2 { grid-template-columns: 1.1fr 0.9fr; }
-    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .row-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 
     .card {
       background: rgba(17, 24, 39, 0.92);
@@ -50,26 +45,8 @@
       box-shadow: 0 12px 40px rgba(0,0,0,.2);
     }
 
-    .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
     .subtle { color: var(--muted); font-size: 14px; }
-
-    .row {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .row-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
     .field { display: flex; flex-direction: column; gap: 6px; }
     label { font-size: 13px; color: var(--muted); }
 
@@ -83,13 +60,11 @@
       padding: 11px 12px;
       outline: none;
     }
-
     input:focus, textarea:focus, select:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(96,165,250,.15);
     }
-
-    textarea { min-height: 140px; resize: vertical; }
+    textarea { min-height: 160px; resize: vertical; }
 
     .btns { display: flex; flex-wrap: wrap; gap: 10px; }
     button {
@@ -106,6 +81,19 @@
     button.danger { background: #b91c1c; }
     button:hover { filter: brightness(1.05); }
 
+    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tab {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .tab.active { background: rgba(96,165,250,.16); border-color: rgba(96,165,250,.45); }
+    .hidden { display: none; }
+
     .pill {
       display: inline-flex;
       align-items: center;
@@ -117,16 +105,10 @@
       font-size: 12px;
       color: var(--muted);
     }
-
     .pill.good { color: #bbf7d0; border-color: rgba(52,211,153,.3); }
     .pill.bad { color: #fecaca; border-color: rgba(248,113,113,.3); }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-      border-radius: 16px;
-    }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 16px; }
     th, td {
       border-bottom: 1px solid var(--line);
       padding: 10px 8px;
@@ -144,10 +126,9 @@
     .ok { color: #86efac; }
 
     .list { display: grid; gap: 10px; }
-
     .pick-row {
       display: grid;
-      grid-template-columns: 1.1fr .8fr .8fr auto;
+      grid-template-columns: 1.1fr .8fr .8fr .9fr auto;
       gap: 10px;
       align-items: end;
       padding: 12px;
@@ -156,42 +137,17 @@
       background: rgba(255,255,255,.02);
     }
 
-    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
-    .tab {
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--line);
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .tab.active { background: rgba(96,165,250,.16); border-color: rgba(96,165,250,.45); }
-    .hidden { display: none; }
-
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
+    .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .metric {
       padding: 14px;
       border-radius: 16px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,.02);
     }
-
     .metric .label { font-size: 12px; color: var(--muted); }
     .metric .value { font-size: 20px; font-weight: 800; margin-top: 4px; }
 
-    .top-note {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
+    .top-note { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .chart-bar-wrap { display: grid; gap: 8px; }
     .chart-bar { display: grid; grid-template-columns: 180px 1fr 110px; gap: 10px; align-items: center; }
     .bar-track {
@@ -209,7 +165,7 @@
     }
 
     @media (max-width: 1100px) {
-      .grid-2, .grid-3, .row, .row-3, .metric-grid { grid-template-columns: 1fr; }
+      .grid-2, .row, .row-3, .metric-grid { grid-template-columns: 1fr; }
       .pick-row { grid-template-columns: 1fr; }
       .chart-bar { grid-template-columns: 1fr; }
     }
@@ -279,22 +235,24 @@
 
         <div id="panelBatch" class="hidden">
           <div class="field">
-            <label>Formato por línea: cuota|confianza</label>
-            <textarea id="batchText">1.28|50
-1.32|50
-1.35|50</textarea>
+            <label>Formato recomendado: Pick 1 | 1.28 | 50 | 64</label>
+            <textarea id="batchText">Pick 1 | 1.28 | 50 | 64
+Pick 2 | 1.32 | 50 | 61
+Pick 3 | 1.35 | 50 | 59</textarea>
           </div>
           <div class="btns" style="margin-top:10px;">
             <button id="loadBatchBtn" type="button">Cargar picks</button>
             <button id="clearBatchBtn" type="button" class="danger">Limpiar pegado</button>
           </div>
+          <p class="small" style="margin-top:8px;">
+            Formatos soportados: <b>Pick 1 | cuota | confianza | probabilidad real</b>, <b>cuota | confianza</b>, o <b>cuota | confianza | probabilidad real</b>.
+          </p>
         </div>
       </div>
 
       <div class="card">
         <h2 class="section-title">Recomendación automática</h2>
         <div id="recommendationBox" class="metric"></div>
-
         <div class="top-note" id="topNote"></div>
 
         <div style="height:14px"></div>
@@ -344,12 +302,12 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'betano_system_simulator_v2';
+    const STORAGE_KEY = 'betano_system_simulator_v3';
 
     const DEFAULT_PICKS = [
-      { id: 1, label: 'Pick 1', odds: '1.28', confidence: 50 },
-      { id: 2, label: 'Pick 2', odds: '1.32', confidence: 50 },
-      { id: 3, label: 'Pick 3', odds: '1.35', confidence: 50 },
+      { id: 1, label: 'Pick 1', odds: '1.28', confidence: 50, realProb: 64 },
+      { id: 2, label: 'Pick 2', odds: '1.32', confidence: 50, realProb: 61 },
+      { id: 3, label: 'Pick 3', odds: '1.35', confidence: 50, realProb: 59 },
     ];
 
     let picks = structuredClone(DEFAULT_PICKS);
@@ -367,17 +325,17 @@
       return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(Number.isFinite(value) ? value : 0);
     }
 
-    function formatPct(value) {
-      return `${value.toFixed(1)}%`;
-    }
-
-    function clamp(value, min, max) {
-      return Math.min(max, Math.max(min, value));
-    }
+    function formatPct(value) { return `${value.toFixed(1)}%`; }
+    function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
 
     function parseOdds(raw) {
       const n = Number(String(raw).replace(',', '.').trim());
       return Number.isFinite(n) && n > 1 ? n : null;
+    }
+
+    function parsePercent(raw, fallback = 50) {
+      const n = Number(String(raw).replace(',', '.').replace(/[^0-9.-]/g, ''));
+      return clamp(Number.isFinite(n) ? n : fallback, 0, 100);
     }
 
     function formatMoneyInput(raw) {
@@ -396,20 +354,15 @@
       const helper = (start, path) => {
         if (path.length === k) { out.push([...path]); return; }
         for (let i = start; i < arr.length; i++) {
-          path.push(arr[i]);
-          helper(i + 1, path);
-          path.pop();
+          path.push(arr[i]); helper(i + 1, path); path.pop();
         }
       };
       if (k >= 1 && k <= arr.length) helper(0, []);
       return out;
     }
 
-    function product(nums) {
-      return nums.reduce((acc, n) => acc * n, 1);
-    }
+    function product(nums) { return nums.reduce((acc, n) => acc * n, 1); }
 
-    // Only system bets: no simples, no full combo.
     function buildStrategies(n) {
       const idx = Array.from({ length: n }, (_, i) => i);
       const s = [];
@@ -434,18 +387,25 @@
       return s;
     }
 
-    function oddsToProbability(odd, edgePct, confidence) {
-      const implied = 1 / odd;
+    function impliedProbability(odd) {
+      return 1 / odd;
+    }
+
+    function modelProbability(pick, odd) {
+      // Prioridad: probabilidad real pegada por el usuario.
+      if (Number.isFinite(pick.realProb) && pick.realProb > 0) return clamp(pick.realProb / 100, 0.01, 0.99);
+
+      // Si no viene probabilidad real, se usa una estimación automática:
+      // probabilidad implícita sin margen * ajuste por edge * ajuste por confianza.
+      const base = impliedProbability(odd);
       const edgeMultiplier = 1 + edgePct / 100;
-      const confMultiplier = 0.8 + (clamp(confidence, 0, 100) / 100) * 0.4;
-      return clamp(implied * edgeMultiplier * confMultiplier, 0.01, 0.99);
+      const confMultiplier = 0.8 + (clamp(pick.confidence ?? 50, 0, 100) / 100) * 0.4;
+      return clamp(base * edgeMultiplier * confMultiplier, 0.01, 0.99);
     }
 
     function outcomeProbability(outcome, probabilities) {
       let p = 1;
-      for (let i = 0; i < outcome.length; i++) {
-        p *= outcome[i] ? probabilities[i] : (1 - probabilities[i]);
-      }
+      for (let i = 0; i < outcome.length; i++) p *= outcome[i] ? probabilities[i] : (1 - probabilities[i]);
       return p;
     }
 
@@ -518,12 +478,13 @@
         .map(p => ({
           ...p,
           odd: parseOdds(p.odds),
-          confidence: clamp(Number(p.confidence) || 50, 0, 100)
+          confidence: clamp(Number(p.confidence) || 50, 0, 100),
+          realProb: Number.isFinite(Number(p.realProb)) ? clamp(Number(p.realProb), 0, 100) : null,
         }))
         .filter(p => p.odd !== null);
 
       const odds = clean.map(p => p.odd);
-      const probabilities = clean.map(p => oddsToProbability(p.odd, edgePct, p.confidence));
+      const probabilities = clean.map(p => modelProbability(p, p.odd));
       const strategies = buildStrategies(odds.length);
       const outcomes = enumerateOutcomes(odds.length);
       const w = objectiveWeights(objective);
@@ -575,7 +536,7 @@
           maxProfit,
           kellyFraction,
           suggestedStake,
-          score
+          score,
         });
       }
 
@@ -587,11 +548,11 @@
       const strategy = best ? strategies.find(s => s.name === best.name) : null;
       const mc = (best && strategy) ? mcEvaluate(odds, probabilities, strategy.groups, stake, simulations) : null;
 
-      render(results, best, recommendedStake, cap, overCap, mc);
+      render(results, best, recommendedStake, cap, overCap, mc, clean.map(p => p.realProb));
       saveState();
     }
 
-    function render(results, best, recommendedStake, cap, overCap, mc) {
+    function render(results, best, recommendedStake, cap, overCap, mc, realProbs) {
       el('edgePctLabel').textContent = `${edgePct}%`;
       el('maxRiskPctLabel').textContent = `${maxRiskPct}%`;
       el('suggestedStake').textContent = best ? formatCLP(recommendedStake) : '—';
@@ -617,7 +578,7 @@
           `EV: ${formatCLP(best.expectedProfit)}`,
           `Riesgo σ: ${formatCLP(best.stdev)}`,
           `Prob. positiva: ${formatPct(best.profitProb)}`,
-          `Kelly: ${formatPct(best.kellyFraction * 100)}`
+          `Kelly: ${formatPct(best.kellyFraction * 100)}`,
         ];
         for (const note of notes) {
           const span = document.createElement('div');
@@ -630,6 +591,12 @@
       el('riskMessage').innerHTML = overCap
         ? `<div class="pill bad">El stake supera el límite de riesgo sobre banca.</div><div style="margin-top:8px;" class="warn">Cap permitido: ${formatCLP(cap)}</div>`
         : `<div class="pill good">El stake está dentro del límite de riesgo.</div><div style="margin-top:8px;" class="ok">Cap permitido: ${formatCLP(cap)}</div>`;
+
+      if (realProbs && realProbs.some(v => Number.isFinite(v))) {
+        const used = realProbs.filter(v => Number.isFinite(v)).length;
+        const avgReal = realProbs.filter(v => Number.isFinite(v)).reduce((a, b) => a + b, 0) / used;
+        el('riskMessage').innerHTML += `<div style="margin-top:10px;" class="small">Probabilidad real cargada en ${used} picks. Promedio: ${avgReal.toFixed(1)}%</div>`;
+      }
 
       el('mcBox').innerHTML = mc
         ? `<div class="label">Promedio simulado</div><div class="value">${formatCLP(mc.avgProfit)}</div><div class="small">Prob. de terminar en positivo: ${formatPct(mc.profitProb)}</div>`
@@ -693,6 +660,10 @@
             <label>Confianza (%)</label>
             <input data-id="${p.id}" data-field="confidence" type="number" min="0" max="100" value="${Number.isFinite(Number(p.confidence)) ? p.confidence : 50}" />
           </div>
+          <div class="field">
+            <label>Probabilidad real (%)</label>
+            <input data-id="${p.id}" data-field="realProb" type="number" min="0" max="100" placeholder="Auto" value="${Number.isFinite(Number(p.realProb)) ? p.realProb : ''}" />
+          </div>
           <div>
             <button class="ghost" type="button" data-remove="${p.id}">Eliminar</button>
           </div>
@@ -704,7 +675,7 @@
         input.addEventListener('input', (e) => {
           const id = Number(e.target.dataset.id);
           const field = e.target.dataset.field;
-          const value = field === 'confidence' ? Number(e.target.value || 50) : e.target.value;
+          const value = field === 'confidence' || field === 'realProb' ? (e.target.value === '' ? null : Number(e.target.value)) : e.target.value;
           picks = picks.map(p => p.id === id ? { ...p, [field]: value } : p);
           compute();
         });
@@ -732,14 +703,53 @@
     }
 
     function loadBatch() {
-      const lines = el('batchText').value.split(/\n|;|\|/).map(x => x.trim()).filter(Boolean);
+      const lines = el('batchText').value.split(/\n+/).map(x => x.trim()).filter(Boolean);
       const next = [];
+
       for (let i = 0; i < lines.length; i++) {
-        const parts = lines[i].includes(',') ? lines[i].split(',') : lines[i].split(/\s+/);
-        const odds = parts[0]?.trim() ?? '';
-        const confidence = parts[1] ? clamp(Number(parts[1]), 0, 100) : 50;
-        next.push({ id: i + 1, label: `Pick ${i + 1}`, odds, confidence });
+        const line = lines[i];
+        const parts = line.split('|').map(x => x.trim()).filter(Boolean);
+
+        let label = `Pick ${i + 1}`;
+        let odds = '';
+        let confidence = 50;
+        let realProb = null;
+
+        if (parts.length === 4) {
+          label = parts[0] || label;
+          odds = parts[1];
+          confidence = parsePercent(parts[2], 50);
+          realProb = parsePercent(parts[3], 0);
+        } else if (parts.length === 3) {
+          if (/^pick\s*\d+/i.test(parts[0])) {
+            label = parts[0] || label;
+            odds = parts[1];
+            confidence = parsePercent(parts[2], 50);
+          } else {
+            odds = parts[0];
+            confidence = parsePercent(parts[1], 50);
+            realProb = parsePercent(parts[2], 0);
+          }
+        } else if (parts.length === 2) {
+          odds = parts[0];
+          confidence = parsePercent(parts[1], 50);
+        } else if (parts.length === 1) {
+          odds = parts[0];
+        } else {
+          continue;
+        }
+
+        odds = String(odds).replace(/[^0-9.,]/g, '').trim();
+
+        next.push({
+          id: i + 1,
+          label,
+          odds,
+          confidence,
+          realProb,
+        });
       }
+
       picks = next;
       renderPicks();
       compute();
@@ -770,7 +780,7 @@
       objective = 'balanced';
       simulations = 10000;
       activeTab = 'manual';
-      el('batchText').value = '1.28|50\n1.32|50\n1.35|50';
+      el('batchText').value = 'Pick 1 | 1.28 | 50 | 64\nPick 2 | 1.32 | 50 | 61\nPick 3 | 1.35 | 50 | 59';
       syncInputs();
       setTab('manual');
       renderPicks();
@@ -786,7 +796,7 @@
     el('simulations').addEventListener('input', (e) => { simulations = Math.max(1000, Number(e.target.value || 10000)); compute(); });
     el('addPickBtn').addEventListener('click', () => {
       const nextId = Math.max(0, ...picks.map(p => p.id)) + 1;
-      picks.push({ id: nextId, label: `Pick ${nextId}`, odds: '1.50', confidence: 50 });
+      picks.push({ id: nextId, label: `Pick ${nextId}`, odds: '1.50', confidence: 50, realProb: null });
       renderPicks();
       compute();
     });
@@ -797,10 +807,8 @@
     el('tabManual').addEventListener('click', () => setTab('manual'));
     el('tabBatch').addEventListener('click', () => setTab('batch'));
 
-    // init
     const loaded = loadState();
-    if (!loaded) syncInputs();
-    else syncInputs();
+    syncInputs();
     renderPicks();
     setTab(activeTab);
     compute();
